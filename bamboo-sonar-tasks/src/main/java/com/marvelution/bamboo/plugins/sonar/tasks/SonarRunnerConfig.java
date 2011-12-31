@@ -73,7 +73,9 @@ public class SonarRunnerConfig {
 		environmentVariables = ((String)taskContext.getConfigurationMap().get(CFG_ENVIRONMENT_VARIABLES));
 		workingDirectory = taskContext.getWorkingDirectory();
 		commandline.add(getSonarRunnerExecutable(builderPath));
-		commandline.add(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS));
+		if (StringUtils.isNotBlank(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS))) {
+			commandline.add(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS));
+		}
 		environment.putAll(environmentVariableAccessor.splitEnvironmentAssignments(environmentVariables, false));
 		environment.put(SONAR_RUNNER_HOME, builderPath);
 	}
