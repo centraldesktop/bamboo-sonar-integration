@@ -21,11 +21,13 @@ package com.marvelution.bamboo.plugins.sonar.tasks.predicates;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.atlassian.bamboo.build.Buildable;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.TaskIdentifier;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.marvelution.bamboo.plugins.sonar.tasks.utils.PluginHelper;
 
 
@@ -35,6 +37,20 @@ import com.marvelution.bamboo.plugins.sonar.tasks.utils.PluginHelper;
  * @author <a href="mailto:markrekveld@marvelution.com">Mark Rekveld</a>
  */
 public class SonarPredicates {
+
+	/**
+	 * Get the Has Sonar Tasks {@link Predicate}
+	 * 
+	 * @return the {@link Predicate}
+	 */
+	public static Predicate<Buildable> hasSonarTasks() {
+		return new Predicate<Buildable>() {
+			@Override
+			public boolean apply(Buildable buildable) {
+				return Iterables.any(buildable.getBuildDefinition().getTaskDefinitions(), isSonarTask());
+			}
+		};
+	}
 
 	/**
 	 * Get the Is Sonar Task {@link Predicate}

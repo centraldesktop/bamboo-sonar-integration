@@ -52,7 +52,7 @@ public abstract class AbstractSonarServerConfigurationCommandDecorator extends
 		}
 		// Sonar JDBC Password is optional
 		if (StringUtils.isNotBlank(configuration.get(CFG_SONAR_JDBC_PASSWORD))) {
-			properties.put("sonar.jdbc.password", configuration.get(CFG_SONAR_JDBC_PASSWORD));
+			properties.put("sonar.jdbc.password", ENCRYPTOR.decrypt(configuration.get(CFG_SONAR_JDBC_PASSWORD)));
 		}
 		// Sonar JDBC URL is optional
 		if (StringUtils.isNotBlank(configuration.get(CFG_SONAR_JDBC_URL))) {

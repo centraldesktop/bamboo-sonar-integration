@@ -52,9 +52,11 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 	private static final Logger LOGGER = Logger.getLogger(AbstractSonarBuildTaskConfigurator.class);
 
 	private static final List<String> FIELDS_TO_COPY = ImmutableList.of(CFG_SONAR_HOST_URL, CFG_SONAR_HOST_USERNAME,
-		CFG_SONAR_HOST_PASSWORD, CFG_SONAR_JDBC_URL, CFG_SONAR_JDBC_USERNAME, CFG_SONAR_JDBC_PASSWORD,
-		CFG_SONAR_JDBC_DRIVER, CFG_SONAR_LANGUAGE, CFG_SONAR_JAVA_SOURCE, CFG_SONAR_JAVA_TARGET,
-		CFG_SONAR_EXTRA_CUSTOM_PARAMETERS);
+		CFG_SONAR_JDBC_URL, CFG_SONAR_JDBC_USERNAME, CFG_SONAR_JDBC_DRIVER, CFG_SONAR_LANGUAGE,
+		CFG_SONAR_JAVA_SOURCE, CFG_SONAR_JAVA_TARGET, CFG_SONAR_EXTRA_CUSTOM_PARAMETERS);
+
+	private static final List<String> PASSWORD_FIELDS = ImmutableList.of(CFG_SONAR_HOST_PASSWORD,
+		CFG_SONAR_JDBC_PASSWORD);
 
 	protected UIConfigSupport uiConfigBean;
 
@@ -120,6 +122,10 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 		taskConfiguratorHelper.populateTaskConfigMapWithActionParameters(config, params,
 			Iterables.concat(TaskConfigConstants.DEFAULT_BUILDER_CONFIGURATION_KEYS, FIELDS_TO_COPY));
+		// Encrypt the password before adding it to the configuration
+		for (String field : PASSWORD_FIELDS) {
+			config.put(field, ENCRYPTOR.encrypt(params.getString(field)));
+		}
 		return config;
 	}
 
@@ -142,6 +148,10 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		populateContextForAllOperations(context);
 		taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition,
 			Iterables.concat(TaskConfigConstants.DEFAULT_BUILDER_CONFIGURATION_KEYS, FIELDS_TO_COPY));
+		// Decrypt the password before adding it to the edit context
+		for (String field : PASSWORD_FIELDS) {
+			context.put(field, ENCRYPTOR.decrypt(taskDefinition.getConfiguration().get(field)));
+		}
 	}
 
 	/**
@@ -153,21 +163,16 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		populateContextForAllOperations(context);
 		taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition,
 			Iterables.concat(TaskConfigConstants.DEFAULT_BUILDER_CONFIGURATION_KEYS, FIELDS_TO_COPY));
-		if (context.containsKey(CFG_SONAR_JDBC_PASSWORD)) {
-			// Add a fake password context variable to display the password
-			context.put(CFG_SONAR_JDBC_PASSWORD, SONAR_FAKE_PASSWORD);
-		}
-		if (context.containsKey(CFG_SONAR_HOST_PASSWORD)) {
-			// Add a fake password context variable to display the password
-			context.put(CFG_SONAR_HOST_PASSWORD, SONAR_FAKE_PASSWORD);
-		}
+		// Add a fake password context variable to display the password
+		context.put(CFG_SONAR_JDBC_PASSWORD, SONAR_FAKE_PASSWORD);
+		// Add a fake password context variable to display the password
+		context.put(CFG_SONAR_HOST_PASSWORD, SONAR_FAKE_PASSWORD);
 		if (!context.containsKey(CFG_SONAR_JDBC_URL) || (context.containsKey(CFG_SONAR_JDBC_URL)
 				&& StringUtils.isBlank((String) context.get(CFG_SONAR_JDBC_URL)))) {
 			// Using Sonar Default Database
 			context.put(CFG_SONAR_JDBC_URL, "jdbc:derby://localhost:1527/sonar;create=true");
 			context.put(CFG_SONAR_JDBC_DRIVER, "org.apache.derby.jdbc.ClientDriver");
 			context.put(CFG_SONAR_JDBC_USERNAME, "sonar");
-			context.put(CFG_SONAR_JDBC_PASSWORD, SONAR_FAKE_PASSWORD);
 		}
 	}
 

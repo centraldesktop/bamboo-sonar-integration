@@ -204,4 +204,10 @@
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.SonarMetricsManager</interface>
 	</component>
 
+	<!-- U P G R A D E   T A S K S -->
+	<component key="password-encryption-upgrade" name="Encrypt Unencrypted Task Passwords Upgrade Task"
+		class="com.marvelution.bamboo.plugins.sonar.tasks.upgrade.EncryptUnencryptedTaskPasswordsUpgradeTask" public="true">
+		<interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+	</component>
+
 </atlassian-plugin>

@@ -24,6 +24,8 @@ import java.util.Map;
 import com.atlassian.bamboo.task.TaskConfigConstants;
 import com.google.common.collect.ImmutableMap;
 import com.marvelution.bamboo.plugins.sonar.tasks.AbstractSonarMavenConfig;
+import com.marvelution.security.crypto.SimpleStringEncryptor;
+import com.marvelution.security.crypto.StringEncryptor;
 
 /**
  * Configuration Constants interface
@@ -118,5 +120,10 @@ public interface SonarConfigConstants {
 	 */
 	String TRD_SONAR_PROJECT_KEY = "com.marvelution.bamboo.plugins.sonar.task.project.key";
 	String TRD_SONAR_PROJECT_NAME = "com.marvelution.bamboo.plugins.sonar.task.project.name";
+
+	/**
+	 * {@link StringEncryptor} used for encrypting/decrypting configuration settings
+	 */
+	StringEncryptor ENCRYPTOR = new SimpleStringEncryptor("zAGUZA5af7s5uSwUDeh2cereJa3UFr");
 
 }

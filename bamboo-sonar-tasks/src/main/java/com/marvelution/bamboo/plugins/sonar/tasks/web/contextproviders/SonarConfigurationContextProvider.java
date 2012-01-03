@@ -87,13 +87,14 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 				// Copy the Sonar Host configuration form the task definition
 				config.setHost(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_URL));
 				config.setUsername(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_USERNAME));
-				config.setPassword(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_PASSWORD));
+				config.setPassword(ENCRYPTOR.decrypt(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_PASSWORD)));
 				// And get the Sonar project key and name form the job build results
 				List<BuildResultsSummary> results = job.getBuildResultSummaries();
 				Collections.sort(results);
 				Collections.reverse(results);
 				for (BuildResultsSummary buildResult : results) {
-					LOGGER.debug("Checking result of build: " + buildResult.getBuildKey() + " #" + buildResult.getBuildNumber());
+					LOGGER.debug("Checking result of build: " + buildResult.getBuildKey() + " #"
+						+ buildResult.getBuildNumber());
 					if (buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_KEY)
 						&& buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_NAME)) {
 						config.setProjectKey(buildResult.getCustomBuildData().get(TRD_SONAR_PROJECT_KEY));

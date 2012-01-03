@@ -76,11 +76,11 @@ public class SonarResultWebItemCondition implements Condition {
 	private List<Job> getAllJobsByKey(String key) {
 		List<Job> jobs = Lists.newArrayList();
 		try {
-			Chain plan = (Chain) planManager.getPlanByKey(key, Chain.class);
+			Chain plan = planManager.getPlanByKey(key, Chain.class);
 			jobs.addAll(plan.getAllJobs());
 		} catch (IncorrectPlanTypeException e) {
 			// Oke it was a build key and not a plan key
-			jobs.add((Job) planManager.getPlanByKey(key, Job.class));
+			jobs.add(planManager.getPlanByKey(key, Job.class));
 		}
 		return jobs;
 	}
