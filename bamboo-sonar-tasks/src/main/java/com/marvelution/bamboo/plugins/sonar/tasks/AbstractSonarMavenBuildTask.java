@@ -115,7 +115,7 @@ public abstract class AbstractSonarMavenBuildTask<CONFIG extends AbstractSonarMa
 				TaskResult result = taskResultBuilder.build();
 				Model pom = getProjectObjectModel(getProjectFile(taskContext));
 				if (pom != null) {
-					final String projectKey = String.format("%s:%s", pom.getGroupId(), pom.getArtifactId());
+					final String projectKey = getResourceKeyFromProjectModel(pom);
 					getLogger().info("Setting the projectKey '" + projectKey + "' in the Build Results");
 					currentBuildResult.getCustomBuildData().put(SonarConfigConstants.TRD_SONAR_PROJECT_KEY,
 						projectKey);
@@ -165,6 +165,20 @@ public abstract class AbstractSonarMavenBuildTask<CONFIG extends AbstractSonarMa
 			getLogger().warn("Failed to read the Maven Model from file: " + projectFile.getAbsolutePath(), e);
 			return null;
 		}
+	}
+
+	/**
+	 * Internal method to get a Sonar Resource Key from the Maven {@link Model} given
+	 * 
+	 * @param model the Maven {@link Model}
+	 * @return the SoanrResource Key
+	 */
+	private String getResourceKeyFromProjectModel(Model model) {
+		String groupId = model.getGroupId();
+		if (StringUtils.isBlank(groupId)) {
+			groupId = model.getParent().getGroupId();
+		}
+		return String.format("%s:%s", groupId, model.getArtifactId());
 	}
 
 	/**
