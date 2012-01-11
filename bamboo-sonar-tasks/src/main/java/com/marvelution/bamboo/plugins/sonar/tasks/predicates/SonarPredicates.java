@@ -19,6 +19,9 @@
 
 package com.marvelution.bamboo.plugins.sonar.tasks.predicates;
 
+import static com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarConfigConstants.CFG_SONAR_ID;
+
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.atlassian.bamboo.build.Buildable;
@@ -28,6 +31,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServer;
 import com.marvelution.bamboo.plugins.sonar.tasks.utils.PluginHelper;
 
 
@@ -98,6 +102,18 @@ public class SonarPredicates {
 	}
 
 	/**
+	 * Get the Is Sonar Server dependency task {@link Predicate}
+	 * 
+	 * @param server
+	 * @return {@link Predicates#and(Predicate, Predicate)} implementation combining the {@link #isSonarTask()} and
+	 *         the {@link IsSonarConfigurationSettingDependentPredicate} predicates
+	 */
+	public static Predicate<TaskDefinition> isSonarServerDependingTask(final SonarServer server) {
+		return Predicates.and(isSonarTask(),
+			new IsSonarConfigurationSettingDependentPredicate(CFG_SONAR_ID, String.valueOf(server.getID())));
+	}
+
+	/**
 	 * Specifci Sonar Task {@link Predicate} implementation
 	 * 
 	 * @author <a href="mailto:markrekveld@marvelution.com">Mark Rekveld</a>
@@ -144,6 +160,41 @@ public class SonarPredicates {
 		public boolean apply(@Nullable TASKDEF taskIdentifier) {
 			return ((TaskIdentifier) Preconditions.checkNotNull(taskIdentifier)).getPluginKey().startsWith(
 				PluginHelper.getPluginKey() + ":task.builder.sonar");
+		}
+
+	}
+
+	/**
+	 * {@link Predicate} implementation to check on specific task configuration field value
+	 * 
+	 * @author <a href="mailto:markrekveld@marvelution.com">Mark Rekveld</a>
+	 *
+	 * @since 1.2.0
+	 */
+	private static class IsSonarConfigurationSettingDependentPredicate implements Predicate<TaskDefinition> {
+
+		private final String name;
+		private final String value;
+
+		/**
+		 * Constructor
+		 *
+		 * @param name the configuration field name
+		 * @param value the configuration field value
+		 */
+		protected IsSonarConfigurationSettingDependentPredicate(String name, String value) {
+			this.name = Preconditions.checkNotNull(name);
+			this.value = Preconditions.checkNotNull(value);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean apply(@Nullable TaskDefinition taskDefinition) {
+			Preconditions.checkNotNull(taskDefinition);
+			return taskDefinition.getConfiguration().containsKey(name)
+				&& StringUtils.equals(taskDefinition.getConfiguration().get(name), value);
 		}
 
 	}

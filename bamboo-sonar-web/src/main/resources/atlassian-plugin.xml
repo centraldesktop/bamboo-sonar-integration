@@ -29,7 +29,7 @@
 	<resource type="i18n" name="Sonar Tasks I18n" location="com.marvelution.bamboo.plugins.sonar.web.i18n"/>
 
 	<!-- W E B   I T E M S -->
-	<web-item key="sonarBulkUpdate" name="Sonar Bulk Update" section="system.admin/sonar" weight="10">
+	<web-item key="sonarBulkUpdate" name="Sonar Bulk Update" section="system.admin/sonar" weight="30">
 		<label key="webitems.system.admin.build.bulkAction"/>
 		<link linkId="sonarBulkAction">/admin/viewAvailableBulkAction.action</link>
 		<condition class="com.marvelution.bamboo.plugins.sonar.web.conditions.SonarBulkActionsConfiguredCondition" />

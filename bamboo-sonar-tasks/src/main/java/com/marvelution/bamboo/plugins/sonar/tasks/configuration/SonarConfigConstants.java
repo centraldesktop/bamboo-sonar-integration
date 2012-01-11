@@ -42,6 +42,7 @@ public interface SonarConfigConstants {
 	/**
 	 * Common Options
 	 */
+	String CFG_SONAR_ID = "sonarId";
 	String CFG_SONAR_HOST_URL = "sonarHostUrl";
 	String CFG_SONAR_HOST_USERNAME = "sonarHostUsername";
 	String CFG_SONAR_HOST_PASSWORD = "sonarHostPassword";
@@ -96,6 +97,7 @@ public interface SonarConfigConstants {
 		CFG_SONAR_JDBC_USE_PROFILE, "Get configuration from a Maven Profile."
 	);
 	String CTX_USES_PROFILE = "usesProfile";
+	String CTX_ADMIN_ACTION = "adminAction";
 
 	String CFG_GOALS = AbstractSonarMavenConfig.CFG_GOALS;
 	String CFG_PROJECT_FILENAME = TaskConfigConstants.CFG_PROJECT_FILENAME;

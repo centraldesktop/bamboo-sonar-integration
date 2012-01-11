@@ -82,7 +82,7 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 		SonarConfiguration config = new SonarConfiguration();
 		for (Job job : jobs) {
 			TaskDefinition taskDefinition = Iterables.find(job.getBuildDefinition().getTaskDefinitions(),
-				SonarPredicates.isSonarTask(), null);
+				SonarPredicates.isSonarTask());
 			if (taskDefinition != null) {
 				// Copy the Sonar Host configuration form the task definition
 				config.setHost(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_URL));

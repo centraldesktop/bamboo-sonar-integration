@@ -94,7 +94,7 @@ public class EncryptUnencryptedTaskPasswordsUpgradeTask implements PluginUpgrade
 	 */
 	@Override
 	public int getBuildNumber() {
-		return 1;
+		return 2;
 	}
 
 	/**
@@ -131,8 +131,9 @@ public class EncryptUnencryptedTaskPasswordsUpgradeTask implements PluginUpgrade
 	private Map<String, String> getTaskConfigurationMap(TaskDefinition taskDefinition) {
 		Map<String, String> config = Maps.newHashMap();
 		for (Entry<String, String> entry : taskDefinition.getConfiguration().entrySet()) {
-			if (PASSWORD_FIELDS.contains(entry.getKey()) && ! StringUtils.isNotBlank(entry.getValue())) {
+			if (PASSWORD_FIELDS.contains(entry.getKey()) && StringUtils.isNotBlank(entry.getValue())) {
 				// A Password field is set with a value. Encrypt it in the new configuration map
+				logger.info("Encrypting field: " + entry.getKey());
 				config.put(entry.getKey(), ENCRYPTOR.encrypt(entry.getValue()));
 			} else {
 				// No need to encrypt this field, just copy it

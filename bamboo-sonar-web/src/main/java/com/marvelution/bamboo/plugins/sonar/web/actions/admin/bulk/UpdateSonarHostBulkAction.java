@@ -102,6 +102,7 @@ public class UpdateSonarHostBulkAction extends AbstractSonarBulkAction {
 	@Override
 	public Map<String, String> getTaskConfigurationMap(Map<String, String[]> params) {
 		Map<String, String> config = super.getTaskConfigurationMap(params);
+		config.put(CFG_SONAR_ID, "0");
 		config.put(CFG_SONAR_HOST_URL, getNewUrl(params));
 		config.put(CFG_SONAR_HOST_USERNAME, getNewUsername(params));
 		config.put(CFG_SONAR_HOST_PASSWORD, getNewPassword(params));

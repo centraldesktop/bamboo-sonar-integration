@@ -43,9 +43,30 @@
 		<atlassian.plugin.key>${atlassian.plugin.key.base}.tasks</atlassian.plugin.key>
 		<sonar.gadgets.version>1.5.0</sonar.gadgets.version>
 		<sonar.gadgets.directory>${project.build.directory}/generated-resources/sonar-gadgets</sonar.gadgets.directory>
+		<atlassian.ao.version>0.16.1</atlassian.ao.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.atlassian.activeobjects</groupId>
+			<artifactId>activeobjects-plugin</artifactId>
+			<version>${atlassian.ao.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.activeobjects</groupId>
+			<artifactId>activeobjects-bamboo-spi</artifactId>
+			<version>${atlassian.ao.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.atlassian.bamboo</groupId>
 			<artifactId>atlassian-bamboo-web</artifactId>
@@ -96,6 +117,18 @@
 			<version>${sonar.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.activeobjects</groupId>
+			<artifactId>activeobjects-test</artifactId>
+			<version>${atlassian.ao.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

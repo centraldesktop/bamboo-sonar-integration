@@ -116,6 +116,12 @@
 		<context>atl.general</context>
 		<dependency>${atlassian.plugin.key}:panel-css</dependency>
 	</web-resource>
+	<web-resource key="sonar-admin" name="Sonar Admin Resources">
+		<context>atl.admin</context>
+		<resource type="download" name="admin.css" location="/com/marvelution/bamboo/plugins/sonar/tasks/styles/admin.css">
+            <property key="content-type" value="text/css"/>
+        </resource>
+	</web-resource>
 
 	<!-- W E B   P A N E L S -->
 	<web-panel key="analysisOverviewPanel" location="sonar.web.panel.gadgets">
@@ -136,7 +142,16 @@
 	</web-section>
 
 	<!-- A D M I N   W E B   I T E M S -->
-	<web-item key="viewSonarGadgets" name="Sonar Gadgets" section="system.admin/sonar" weight="30">
+	<web-item key="viewSonarServers" name="Sonar Servers" section="system.admin/sonar" weight="10">
+		<label key="webitems.system.admin.sonar.view.servers" />
+		<link linkId="viewSonarServers">/admin/sonar/viewSonarServers.action</link>
+	</web-item>
+	<web-item key="viewSonarServerMatrix" name="Sonar Server Matrix" section="system.admin/sonar" weight="20">
+		<label key="webitems.system.admin.sonar.server.matrix" />
+		<link linkId="viewSonarServerMatrix">/admin/sonar/viewSonarServerMatrix.action</link>
+	</web-item>
+	<!-- Weight 30 is reserved for the Bulk Actions link from the Web module -->
+	<web-item key="viewSonarGadgets" name="Sonar Gadgets" section="system.admin/sonar" weight="40">
 		<label key="webitems.system.admin.sonar.view.gadgets" />
 		<link linkId="viewSonarGadgets">/admin/sonar/viewSonarGadgets.action</link>
 	</web-item>
@@ -156,6 +171,35 @@
 	<!-- A D M I N   X W O R K   A C T I O N S -->
 	<xwork key="sonarConfigExtra" name="Extra Sonar Admin Actions">
 		<package name="sonarAdminExtra" extends="admin" namespace="/admin/sonar">
+			<action name="viewSonarServers" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="default">
+				<result name="success" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/viewSonarServers.ftl</result>
+			</action>
+			<action name="addSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="add">
+				<result name="input" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/configureSonarServers.ftl</result>
+			</action>
+			<action name="createSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="create">
+				<result name="error" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/configureSonarServers.ftl</result>
+				<result name="success" type="redirect">/admin/sonar/viewSonarServers.action?action=added</result>
+			</action>
+			<action name="editSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="edit">
+				<result name="input" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/configureSonarServers.ftl</result>
+				<result name="error" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/configureSonarServers.ftl</result>
+			</action>
+			<action name="updateSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="update">
+				<result name="error" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/configureSonarServers.ftl</result>
+				<result name="success" type="redirect">/admin/sonar/viewSonarServers.action?action=updated</result>
+			</action>
+			<action name="deleteSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="delete">
+				<result name="input" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/confirmDeleteSonarServer.ftl</result>
+				<result name="error" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/confirmDeleteSonarServer.ftl</result>
+			</action>
+			<action name="removeSonarServer" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ConfigureSonarServers" method="remove">
+				<result name="error" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/viewSonarServers.ftl</result>
+				<result name="success" type="redirect">/admin/sonar/viewSonarServers.action?action=deleted</result>
+			</action>
+			<action name="viewSonarServerMatrix" class="com.marvelution.bamboo.plugins.sonar.tasks.actions.admin.ViewSonarServerMatrix" method="default">
+				<result name="input" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/viewSonarServerMatrix.ftl</result>
+			</action>
 			<action name="viewSonarGadgets" class="com.marvelution.bamboo.plugins.sonar.tasks.web.actions.admin.ViewSonarGadgets" method="default">
 				<result name="input" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/viewSonarGadgets.ftl</result>
 				<result name="success" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/admin/viewSonarGadgets.ftl</result>
@@ -200,9 +244,27 @@
 	</xwork>
 
 	<!-- C O M P O N E N T S -->
+	<component key="tx-processor" name="Transactional Annotation Processor" class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+		<decription>Processes @Transactional annotations.</decription>
+	</component>
+	<component key="sonar-server-manager" name="Sonar Server Manager Service" class="com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManagerService">
+		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager</interface>
+	</component>
 	<component key="sonarMetricsManager" name="Sonar Metrics Manager" class="com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.DefaultSonarMetricsManager">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.SonarMetricsManager</interface>
 	</component>
+
+	<!-- I M P O R T E D   C O M P O N E N T S -->
+	<component-import key="ao" name="Active Objects service" interface="com.atlassian.activeobjects.external.ActiveObjects">
+		<description>Component to access Active Objects functionality from the plugin</description>
+	</component-import>
+
+	<!-- A C T I V E   O B J E C T S -->
+	<ao key="ao-sonar-module">
+		<description>Active Objects module to configure the Sonar Entities</description>
+		<entity>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServer</entity>
+		<entity>com.marvelution.bamboo.plugins.sonar.tasks.servers.JDBCResource</entity>
+	</ao>
 
 	<!-- U P G R A D E   T A S K S -->
 	<component key="password-encryption-upgrade" name="Encrypt Unencrypted Task Passwords Upgrade Task"
