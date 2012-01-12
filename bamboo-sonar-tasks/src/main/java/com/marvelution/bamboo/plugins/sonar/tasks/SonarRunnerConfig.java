@@ -34,6 +34,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.atlassian.bamboo.process.CommandlineStringUtils;
 import com.atlassian.bamboo.process.EnvironmentVariableAccessor;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
@@ -74,7 +75,8 @@ public class SonarRunnerConfig {
 		workingDirectory = taskContext.getWorkingDirectory();
 		commandline.add(getSonarRunnerExecutable(builderPath));
 		if (StringUtils.isNotBlank(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS))) {
-			commandline.add(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS));
+			commandline.addAll(CommandlineStringUtils.tokeniseCommandline(StringUtils.replaceChars(
+				(String) taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS), "\r\n", "  ")));
 		}
 		environment.putAll(environmentVariableAccessor.splitEnvironmentAssignments(environmentVariables, false));
 		environment.put(SONAR_RUNNER_HOME, builderPath);

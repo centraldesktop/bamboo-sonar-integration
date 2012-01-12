@@ -91,7 +91,8 @@ public abstract class AbstractSonarMavenConfig {
 		}
 		rawGoals.append(":").append(SONAR_PLUGIN_GOAL);
 		if (StringUtils.isNotBlank(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS))) {
-			rawGoals.append(" ").append(taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS));
+			rawGoals.append(" ").append(StringUtils.replaceChars(
+				(String) taskContext.getConfigurationMap().get(CFG_SONAR_EXTRA_CUSTOM_PARAMETERS), "\r\n", "  "));
 		}
 		List<String> goals = CommandlineStringUtils.tokeniseCommandline(rawGoals.toString());
 		this.hasTests = taskContext.getConfigurationMap().getAsBoolean(CFG_HAS_TESTS);
