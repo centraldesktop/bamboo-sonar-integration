@@ -98,6 +98,9 @@ public interface SonarConfigConstants {
 	);
 	String CTX_USES_PROFILE = "usesProfile";
 	String CTX_ADMIN_ACTION = "adminAction";
+	String CTX_SONAR_SERVERS = "sonarServers";
+	String CTX_SONAR_SERVER = "sonarServer";
+	String CTX_DELETED_SERVER = "deletedServer";
 
 	String CFG_GOALS = AbstractSonarMavenConfig.CFG_GOALS;
 	String CFG_PROJECT_FILENAME = TaskConfigConstants.CFG_PROJECT_FILENAME;

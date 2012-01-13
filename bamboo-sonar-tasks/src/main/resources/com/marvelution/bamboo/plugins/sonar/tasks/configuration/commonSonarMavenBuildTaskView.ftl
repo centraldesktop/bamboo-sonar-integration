@@ -17,6 +17,8 @@
  ~ under the License.
  --]
 
+[#import "/com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarBuildTask.ftl" as sbt /]
+
 [@ww.label labelKey='builder.maven2.projectFile' name='projectFile' hideOnNull='true' /]
 [@ui.displayJdk jdkLabel=buildJdk isJdkValid=uiConfigBean.isJdkLabelValid(buildJdk) /]
 [@ww.label labelKey='builder.common.env' name='environmentVariables' hideOnNull='true'/]
@@ -27,16 +29,9 @@
     [/@ww.param]
 [/@ww.label]
 
-[@ww.label labelKey='sonar.host.url' name='sonarHostUrl' /]
-[@ww.label labelKey='sonar.host.username' name='sonarHostUsername' hideOnNull='true' /]
-[@ww.label labelKey='sonar.host.password' name='sonarHostPassword' hideOnNull='true' /]
+[@sbt.showSonarHostViewer usesProfile /]
 [#if usesProfile ]
 	[@ww.label labelKey='sonar.jdbc.profile' name='sonarJdbcProfile' /]
-[#else]
-	[@ww.label labelKey='sonar.jdbc.url' name='sonarJdbcUrl' /]
-	[@ww.label labelKey='sonar.jdbc.username' name='sonarJdbcUsername' /]
-	[@ww.label labelKey='sonar.jdbc.password' name='sonarJdbcPassword' /]
-	[@ww.label labelKey='sonar.jdbc.driver' name='sonarJdbcDriver' /]
 [/#if]
 
 [#include "commonSonarBuildTaskView.ftl"]

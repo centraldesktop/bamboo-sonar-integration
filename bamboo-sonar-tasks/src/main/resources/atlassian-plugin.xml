@@ -250,6 +250,10 @@
 	<component key="sonar-server-manager" name="Sonar Server Manager Service" class="com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManagerService">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager</interface>
 	</component>
+	<component key="sonar-server-task-configration-service" name="Sonar Server Task Configration Service"
+		class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationServiceImpl">
+		<interface>com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationService</interface>
+	</component>
 	<component key="sonarMetricsManager" name="Sonar Metrics Manager" class="com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.DefaultSonarMetricsManager">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.SonarMetricsManager</interface>
 	</component>

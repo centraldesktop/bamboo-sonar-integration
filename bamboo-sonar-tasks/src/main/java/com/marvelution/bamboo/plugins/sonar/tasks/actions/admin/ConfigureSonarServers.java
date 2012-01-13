@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import com.atlassian.bamboo.ww2.BambooActionSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
+import com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationService;
 import com.marvelution.bamboo.plugins.sonar.tasks.servers.JDBCResource;
 import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServer;
 import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager;
@@ -56,6 +57,7 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 	private final Logger logger = Logger.getLogger(ConfigureSonarServers.class);
 
 	private SonarServerManager serverManager;
+	private SonarServerTaskConfigurationService configrationService;
 	private String action;
 	private String mode;
 	private int serverId;
@@ -77,6 +79,15 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 	 */
 	public void setServerManager(SonarServerManager serverManager) {
 		this.serverManager = serverManager;
+	}
+
+	/**
+	 * Setter for configrationService
+	 *
+	 * @param configrationService the configrationService to set
+	 */
+	public void setConfigrationService(SonarServerTaskConfigurationService configrationService) {
+		this.configrationService = configrationService;
 	}
 
 	/**
@@ -160,8 +171,10 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 		setMode(EDIT);
 		if (!isValidServer()) {
 			return ERROR;
+		} else if (!configrationService.updateSonarServerTaskConfiguration(getSonarServer())) {
+			addActionError(getText("sonar.global.errors.task.validation.errors"));
+			return ERROR;
 		}
-		// TODO Validate Tasks
 		SonarServer server = serverManager.updateServer(getServerId(), getServerName(), getServerDescription(),
 			getServerHost(), getServerUsername(), getServerPassword(), getJdbcUrl(), getJdbcDriver(),
 			getJdbcUsername(), getJdbcPassword());
@@ -199,7 +212,7 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 	public String doRemove() throws Exception {
 		if (serverManager.hasServer(getServerId())) {
 			SonarServer server = serverManager.getServer(serverId);
-			// TODO Disable depending tasks
+			configrationService.disableSonarServerTaskJobs(server);
 			serverManager.removeServer(server);
 			return SUCCESS;
 		} else {

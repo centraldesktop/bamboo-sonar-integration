@@ -19,18 +19,13 @@
 
 [#-- @ftlvariable name="uiConfigBean" type="com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport" --]
 
+[#import "/com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarBuildTask.ftl" as sbt /]
+
 [@ww.label labelKey='executable.type' name='label' /]
 [@ui.displayJdk jdkLabel=buildJdk isJdkValid=uiConfigBean.isJdkLabelValid(buildJdk) /]
 [@ww.label labelKey='builder.common.env' name='environmentVariables' hideOnNull='true'/]
-[@ww.label labelKey='sonar.host.url' name='sonarHostUrl' /]
-[@ww.label labelKey='sonar.host.username' name='sonarHostUsername' hideOnNull='true' /]
-[@ww.label labelKey='sonar.host.password' name='sonarHostPassword' hideOnNull='true' /]
-[#if !serverConfigured ]
-	[@ww.label labelKey='sonar.jdbc.url' name='sonarJdbcUrl' /]
-	[@ww.label labelKey='sonar.jdbc.username' name='sonarJdbcUsername' /]
-	[@ww.label labelKey='sonar.jdbc.password' name='sonarJdbcPassword' /]
-	[@ww.label labelKey='sonar.jdbc.driver' name='sonarJdbcDriver' /]
-[#else]
+[@sbt.showSonarHostViewer serverConfigured /]
+[#if serverConfigured ]
 	[@ww.label labelKey='sonar.runner.server.setup' value='<i>Yes</i>' escape="false" /]
 [/#if]
 [#if !projectConfigured ]

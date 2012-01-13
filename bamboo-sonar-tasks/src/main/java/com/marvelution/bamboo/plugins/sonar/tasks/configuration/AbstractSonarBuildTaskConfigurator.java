@@ -39,7 +39,10 @@ import com.atlassian.bamboo.v2.build.agent.capability.Requirement;
 import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServer;
+import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager;
 
 /**
  * Base implementation of the {@link AbstractTaskConfigurator} for all the Sonar Tasks
@@ -59,6 +62,7 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		CFG_SONAR_JDBC_PASSWORD);
 
 	protected UIConfigSupport uiConfigBean;
+	protected SonarServerManager serverManager;
 
 	/**
 	 * {@inheritDoc}
@@ -86,11 +90,18 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 	@Override
 	public void validateSonarHost(@NotNull ActionParametersMap params, @NotNull ErrorCollection errorCollection) {
 		LOGGER.debug("Validating Sonar Host Properties");
-		if (StringUtils.isBlank(params.getString(CFG_SONAR_HOST_URL))) {
-			errorCollection.addError(CFG_SONAR_HOST_URL, getI18nBean().getText("sonar.host.url.mandatory"));
-		} else if (!params.getString(CFG_SONAR_HOST_URL).startsWith("http://")
-			&& !params.getString(CFG_SONAR_HOST_URL).startsWith("https://")) {
-			errorCollection.addError(CFG_SONAR_HOST_URL, getI18nBean().getText("sonar.host.url.invalid"));
+		if (params.containsKey(CFG_SONAR_ID) && params.getInt(CFG_SONAR_ID, 0) != 0) {
+			copySonarServerToConfiguration(params);
+			if (!serverManager.hasServer(params.getInt(CFG_SONAR_ID, 0))) {
+				errorCollection.addError("sonarId", getI18nBean().getText("sonar.server.unknown"));
+			}
+		} else {
+			if (StringUtils.isBlank(params.getString(CFG_SONAR_HOST_URL))) {
+				errorCollection.addError(CFG_SONAR_HOST_URL, getI18nBean().getText("sonar.host.url.mandatory"));
+			} else if (!params.getString(CFG_SONAR_HOST_URL).startsWith("http://")
+				&& !params.getString(CFG_SONAR_HOST_URL).startsWith("https://")) {
+				errorCollection.addError(CFG_SONAR_HOST_URL, getI18nBean().getText("sonar.host.url.invalid"));
+			}
 		}
 	}
 
@@ -122,6 +133,8 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
 		taskConfiguratorHelper.populateTaskConfigMapWithActionParameters(config, params,
 			Iterables.concat(TaskConfigConstants.DEFAULT_BUILDER_CONFIGURATION_KEYS, FIELDS_TO_COPY));
+		// Copy the Sonar server to the ActionParametersMap in case it is set
+		copySonarServerToConfiguration(params);
 		// Encrypt the password before adding it to the configuration
 		for (String field : PASSWORD_FIELDS) {
 			config.put(field, ENCRYPTOR.encrypt(params.getString(field)));
@@ -136,6 +149,7 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 	public void populateContextForCreate(@NotNull Map<String, Object> context) {
 		super.populateContextForCreate(context);
 		populateContextForAllOperations(context);
+		context.put(CFG_SONAR_ID, "0");
 		context.put(TaskConfigConstants.CFG_JDK_LABEL, uiConfigBean.getDefaultJdkLabel());
 	}
 
@@ -163,16 +177,23 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 		populateContextForAllOperations(context);
 		taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition,
 			Iterables.concat(TaskConfigConstants.DEFAULT_BUILDER_CONFIGURATION_KEYS, FIELDS_TO_COPY));
+		try {
+			int sonarId = Integer.parseInt(taskDefinition.getConfiguration().get(CFG_SONAR_ID));
+			if (serverManager.hasServer(sonarId)) {
+				context.put(CTX_SONAR_SERVER, serverManager.getServer(sonarId));
+			} else if (sonarId > 0) {
+				context.put(CTX_DELETED_SERVER, true);
+			}
+		} catch (Exception e) {
+			context.put(CFG_SONAR_ID, "0");
+		}
 		// Add a fake password context variable to display the password
-		context.put(CFG_SONAR_JDBC_PASSWORD, SONAR_FAKE_PASSWORD);
+		if (StringUtils.isNotBlank((String) context.get(CFG_SONAR_HOST_PASSWORD))) {
+			context.put(CFG_SONAR_HOST_PASSWORD, SONAR_FAKE_PASSWORD);
+		}
 		// Add a fake password context variable to display the password
-		context.put(CFG_SONAR_HOST_PASSWORD, SONAR_FAKE_PASSWORD);
-		if (!context.containsKey(CFG_SONAR_JDBC_URL) || (context.containsKey(CFG_SONAR_JDBC_URL)
-				&& StringUtils.isBlank((String) context.get(CFG_SONAR_JDBC_URL)))) {
-			// Using Sonar Default Database
-			context.put(CFG_SONAR_JDBC_URL, "jdbc:derby://localhost:1527/sonar;create=true");
-			context.put(CFG_SONAR_JDBC_DRIVER, "org.apache.derby.jdbc.ClientDriver");
-			context.put(CFG_SONAR_JDBC_USERNAME, "sonar");
+		if (StringUtils.isNotBlank((String) context.get(CFG_SONAR_JDBC_PASSWORD))) {
+			context.put(CFG_SONAR_JDBC_PASSWORD, SONAR_FAKE_PASSWORD);
 		}
 	}
 
@@ -186,12 +207,51 @@ public abstract class AbstractSonarBuildTaskConfigurator extends AbstractTaskCon
 	}
 
 	/**
+	 * Setter for serverManager
+	 *
+	 * @param serverManager the serverManager to set
+	 */
+	public void setServerManager(SonarServerManager serverManager) {
+		this.serverManager = serverManager;
+	}
+
+	/**
 	 * Setter for the context that is applicable for both view and edit
 	 * 
 	 * @param context the {@link Map} context to set
 	 */
 	protected void populateContextForAllOperations(@NotNull Map<String, Object> context) {
 		context.put(CTX_UI_CONFIG_BEAN, uiConfigBean);
+		Map<String, String> servers = Maps.newHashMap();
+		servers.put("0", getI18nBean().getText("sonar.server.specify"));
+		for (SonarServer server : serverManager.getServers()) {
+			servers.put(String.valueOf(server.getID()), server.getName());
+		}
+		context.put(CTX_SONAR_SERVERS, servers);
+	}
+
+	/**
+	 * Helper method to copy a {@link NexusServer} to the configuration Action parameters map given
+	 * 
+	 * @param params the {@link ActionParametersMap} to add the server to
+	 */
+	protected void copySonarServerToConfiguration(ActionParametersMap params) {
+		if (params.containsKey(CTX_ADMIN_ACTION)) {
+			LOGGER.debug("No need to copy the server configuration, we are coming from the admin action.");
+		} else if (params.containsKey(CFG_SONAR_ID) && serverManager.hasServer(params.getInt(CFG_SONAR_ID, 0))) {
+			SonarServer server = serverManager.getServer(params.getInt(CFG_SONAR_ID, 0));
+			params.put(CFG_SONAR_HOST_URL, server.getHost());
+			params.put(CFG_SONAR_HOST_USERNAME, server.getUsername());
+			params.put(CFG_SONAR_HOST_PASSWORD, server.getPassword());
+			if (server.getJDBCResource() != null) {
+				params.put(CFG_SONAR_JDBC_URL, server.getJDBCResource().getUrl());
+				params.put(CFG_SONAR_JDBC_DRIVER, server.getJDBCResource().getDriver());
+				params.put(CFG_SONAR_JDBC_USERNAME, server.getJDBCResource().getUsername());
+				params.put(CFG_SONAR_JDBC_PASSWORD, server.getJDBCResource().getPassword());
+			}
+		} else {
+			LOGGER.debug("Nothing to copy, no Global Sonar server used");
+		}
 	}
 
 }
