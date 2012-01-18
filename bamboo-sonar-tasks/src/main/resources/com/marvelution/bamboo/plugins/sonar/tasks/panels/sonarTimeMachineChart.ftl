@@ -27,7 +27,7 @@
 </div>
 [#else]
 	[@met.showMetricsEditorForBuild plan /]
-	<img id="timeMachineChart" src="" style="display: none; padding: 10px;" />
+	<img id="timeMachineChart" src="" style="padding: 10px; background: url('${baseUrl}/images/gadgets/loading.gif') no-repeat center;" />
 	<script type="text/javascript">
 		var BASE_IMG_SRC = "${sonarConfiguration.host}/charts/trends/${sonarConfiguration.projectKey}?locale=en-US&sids=${versions}&metrics=";
 		function refreshTimeMachineChart() {
@@ -40,8 +40,9 @@
 			});
 			var width = timeMachineChart.parent().width() - 50;
 			var height = Math.round(width / 2.8);
-			timeMachineChart.attr({src: BASE_IMG_SRC + metrics.join() + "&ts=" + new Date().getTime() + "&w=" + width + "&h=" + height});
-			timeMachineChart.css({display: "block"});
+			timeMachineChart.attr({
+				src: BASE_IMG_SRC + metrics.join() + "&ts=" + new Date().getTime() + "&w=" + width + "&h=" + height
+			});
 		}
 		AJS.$(document).ready(function() {
 			refreshTimeMachineChart();

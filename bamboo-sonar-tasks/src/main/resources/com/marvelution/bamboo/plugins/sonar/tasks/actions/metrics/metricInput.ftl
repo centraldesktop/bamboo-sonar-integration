@@ -25,7 +25,7 @@
     [@ww.hidden name='buildKey' /]
     <fieldset class="group">
         <legend><span>[@ww.text name="sonar.metrics.edit.prompt" /]</span></legend>
-        [@ww.textfield labelKey='metrics.title' name='metricInput' after=submitBtn labelClass='assistive' /]
+        [@ww.textfield labelKey='sonar.metrics.title' name='metricInput' after=submitBtn labelClass='assistive' /]
     </fieldset>
 [/@ww.form]
 [#import "/com/marvelution/bamboo/plugins/sonar/tasks/actions/metrics/metrics.ftl" as met /]
