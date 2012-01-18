@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.log4j.Logger;
 import org.sonar.wsclient.Sonar;
+import org.sonar.wsclient.connectors.ConnectionException;
 import org.sonar.wsclient.connectors.HttpClient4Connector;
 
 import com.atlassian.bamboo.build.Buildable;
@@ -72,17 +74,26 @@ public class SonarTimeMachineChartContextProvider extends SonarConfigurationCont
 		context.put("metrics", metrics);
 		SonarConfiguration sonarConfiguration = (SonarConfiguration) context.get("sonarConfiguration");
 		if (sonarConfiguration.isAnalyzed()) {
-			Sonar sonar = new Sonar(new HttpClient4Connector(sonarConfiguration.getSonarHost()));
-			String json =
-				sonar.getConnector().execute(new ProjectQuery(sonarConfiguration.getProjectKey()).setVersions(true));
-			List<String> versionIds = Lists.newArrayList();
-			if (json != null) {
-				Project project = new ProjectUnmarshaller().toModel(json);
-				for (Version version : project.getVersions()) {
-					versionIds.add(Integer.toString(version.getSid()));
+			try {
+				Sonar sonar = new Sonar(new HttpClient4Connector(sonarConfiguration.getSonarHost()));
+				String json = sonar.getConnector().execute(
+					new ProjectQuery(sonarConfiguration.getProjectKey()).setVersions(true));
+				List<String> versionIds = Lists.newArrayList();
+				if (json != null) {
+					Project project = new ProjectUnmarshaller().toModel(json);
+					for (Version version : project.getVersions()) {
+						versionIds.add(Integer.toString(version.getSid()));
+					}
+				}
+				context.put("versions", StringUtils.join(versionIds, ","));
+			} catch (ConnectionException e) {
+				LOGGER.error("Failed to get version IDs from Sonar: " + e.getMessage());
+				if (e.getCause() instanceof HttpHostConnectException) {
+					context.put("exception", e.getCause());
+				} else {
+					context.put("exception", e);
 				}
 			}
-			context.put("versions", StringUtils.join(versionIds, ","));
 		}
 		return context;
 	}

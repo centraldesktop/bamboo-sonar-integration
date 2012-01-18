@@ -71,7 +71,11 @@ public class SonarConfiguration {
 	 * @param host the host to set
 	 */
 	public void setHost(String host) {
-		this.host = host;
+		if (host.endsWith("/")) {
+			this.host = host.substring(0, host.length() - 1);
+		} else {
+			this.host = host;
+		}
 	}
 	
 	/**
