@@ -20,12 +20,11 @@
 /** Panel Styles **/
 #sonar-main-panel {
 	min-width: 966px;
-	padding: 12px;
 }
 
 #sonar-main-panel .column {
-	margin: 10px;
-	padding: 10px;
+	margin: 5px;
+	padding: 5px;
 }
 
 #sonar-primary-column {
@@ -37,6 +36,23 @@
 	width: 30%;
 	clear: right;
 	float: right;
+}
+
+.module {
+	background-color: white;
+	clear: both;
+	word-wrap: break-word;
+}
+
+.mod-header, .mod-content, .mod-footer {
+	clear: both;
+	display: block;
+	position: relative;
+}
+
+.mod-header h3 {
+	font-size: 18px;
+	line-height: 26px;
 }
 
 .field-group {
