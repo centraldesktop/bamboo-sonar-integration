@@ -22,7 +22,6 @@
 		<description>${project.description}</description>
 		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 		<version>${project.version}</version>
-		<application-version min="${atlassian.bamboo.version}" />
 	</plugin-info>
 
 	<!-- I 1 8 N   R E S O U R C E S -->

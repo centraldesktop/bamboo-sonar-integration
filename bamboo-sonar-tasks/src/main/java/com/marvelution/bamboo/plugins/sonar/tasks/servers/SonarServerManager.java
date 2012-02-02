@@ -114,14 +114,6 @@ public interface SonarServerManager {
 					String jdbcUrl, String jdbcDriver, String jdbcUsername, String jdbcPassword);
 
 	/**
-	 * Add a copy of the given {@link SonarServer}
-	 * 
-	 * @param server the {@link SonarServer} to copy
-	 * @return the new {@link SonarServer}
-	 */
-	SonarServer addServer(SonarServer server);
-
-	/**
 	 * Update a {@link SonarServer}
 	 * 
 	 * @param serverId the Id of the server to update
@@ -140,26 +132,10 @@ public interface SonarServerManager {
 					String password, String jdbcUrl, String jdbcDriver, String jdbcUsername, String jdbcPassword);
 
 	/**
-	 * Update a {@link SonarServer}
-	 * 
-	 * @param server the {@link SonarServer} to update
-	 * @return the new {@link SonarServer}
-	 */
-	SonarServer updateServer(SonarServer server);
-
-	/**
 	 * Remove a {@link SonarServer} by its server Id
 	 * 
 	 * @param serverId the Id of the {@link SonarServer} to remove
 	 */
 	void removeServer(int serverId);
-
-	/**
-	 * Remove a {@link SonarServer}
-	 * 
-	 * @param server the {@link SonarServer} to remove
-	 * @see #removeServer(int)
-	 */
-	void removeServer(SonarServer server);
 
 }

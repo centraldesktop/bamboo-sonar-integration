@@ -1,0 +1,89 @@
+/*
+ * Licensed to Marvelution under one or more contributor license
+ * agreements.  See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Marvelution licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package com.marvelution.bamboo.plugins.sonar.tasks;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.atlassian.bamboo.plugins.maven.task.MavenUtils;
+import com.atlassian.bamboo.utils.SystemProperty;
+import com.atlassian.bamboo.v2.build.agent.capability.AbstractHomeDirectoryCapabilityDefaultsHelper;
+import com.google.common.base.Predicate;
+
+/**
+ * Capability Defaults Helper for the Sonar Maven 2 task
+ * 
+ * @author <a href="mailto:markrekveld@marvelution.com">Mark Rekveld</a>
+ *
+ * @since 1.2.0
+ */
+public class SonarMaven2CapabilityDefaultsHelper extends AbstractHomeDirectoryCapabilityDefaultsHelper {
+
+	private static final String MAVEN2_HOME_POSIX = "/usr/share/maven2/";
+	private static final Pattern MAVEN_VERSION_2 = Pattern.compile("2\\.\\d+\\.\\d+");
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@NotNull
+	@Override
+	protected String getExecutableName() {
+		return SonarMaven2Config.getExecutableName();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Nullable
+	@Override
+	protected String getEnvHome() {
+		return SystemProperty.MAVEN2_HOME.getValue();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@NotNull
+	@Override
+	protected String getPosixHome() {
+		return MAVEN2_HOME_POSIX;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@NotNull
+	@Override
+	protected String getCapabilityKey() {
+		return "system.builder.mvn2.Maven 2";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Predicate<File> getValidityPredicate() {
+		return new MavenUtils.MavenVersionMatcher(MAVEN_VERSION_2);
+	}
+
+}

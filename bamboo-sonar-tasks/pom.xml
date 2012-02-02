@@ -41,9 +41,9 @@
 	<properties>
 		<atlassian.plugin.name>Marvelution Bamboo Sonar Tasks Plugin</atlassian.plugin.name>
 		<atlassian.plugin.key>${atlassian.plugin.key.base}.tasks</atlassian.plugin.key>
-		<sonar.gadgets.version>1.5.0</sonar.gadgets.version>
+		<sonar.gadgets.version>1.5.1-SNAPSHOT</sonar.gadgets.version>
 		<sonar.gadgets.directory>${project.build.directory}/generated-resources/sonar-gadgets</sonar.gadgets.directory>
-		<atlassian.ao.version>0.16.1</atlassian.ao.version>
+		<atlassian.ao.version>0.17.2</atlassian.ao.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +70,13 @@
 		<dependency>
 			<groupId>com.atlassian.bamboo</groupId>
 			<artifactId>atlassian-bamboo-web</artifactId>
+			<version>${atlassian.bamboo.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.bamboo.plugins.maven</groupId>
+			<artifactId>atlassian-bamboo-plugin-maven</artifactId>
 			<version>${atlassian.bamboo.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>
@@ -222,6 +229,14 @@
 							<overWrite>true</overWrite>
 							<includes>**/*.*</includes>
 						</artifactItem>
+						<artifactItem>
+							<groupId>com.atlassian.bamboo.plugins.maven</groupId>
+							<artifactId>atlassian-bamboo-plugin-maven</artifactId>
+							<version>${atlassian.bamboo.version}</version>
+							<type>jar</type>
+							<overWrite>true</overWrite>
+							<includes>com/atlassian/bamboo/plugins/maven/task/MavenUtils**.class</includes>
+						</artifactItem>
 					</artifactItems>
 					<outputDirectory>${sonar.gadgets.directory}</outputDirectory>
 					<overWriteReleases>true</overWriteReleases>
@@ -244,9 +259,11 @@
 						<Embed-StripGroup>false</Embed-StripGroup>
 						<Embed-StripVersion>false</Embed-StripVersion>
 						<Import-Package>
-							*;resolution:=optional
+							!*
 						</Import-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>
+						<DynamicImport-Package>
+							*
+						</DynamicImport-Package>
 						<Include-Resource>
 							{maven-resources},
 							{maven-dependencies},

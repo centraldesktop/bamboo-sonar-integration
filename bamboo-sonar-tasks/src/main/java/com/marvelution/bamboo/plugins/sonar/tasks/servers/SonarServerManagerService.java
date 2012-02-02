@@ -30,7 +30,7 @@ import net.java.ao.DBParam;
 import net.java.ao.Query;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.activeobjects.tx.Transactional;
+import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.google.common.collect.Lists;
 
 /**
@@ -40,7 +40,6 @@ import com.google.common.collect.Lists;
  *
  * @since 1.2.0
  */
-@Transactional
 public class SonarServerManagerService implements SonarServerManager {
 
 	private final Logger logger = Logger.getLogger(SonarServerManagerService.class);
@@ -68,7 +67,12 @@ public class SonarServerManagerService implements SonarServerManager {
 	 */
 	@Override
 	public boolean hasServers() {
-		return objects.count(SonarServer.class) > 0;
+		return objects.executeInTransaction(new TransactionCallback<Boolean>() {
+			@Override
+			public Boolean doInTransaction() {
+				return objects.count(SonarServer.class) > 0;
+			}
+		});
 	}
 
 	/**
@@ -92,27 +96,42 @@ public class SonarServerManagerService implements SonarServerManager {
 	 */
 	@Override
 	public Collection<SonarServer> getServers() {
-		return Lists.newArrayList(objects.find(SonarServer.class));
+		return objects.executeInTransaction(new TransactionCallback<Collection<SonarServer>>() {
+			@Override
+			public Collection<SonarServer> doInTransaction() {
+				return Lists.newArrayList(objects.find(SonarServer.class));
+			}
+		});
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SonarServer getServer(int serverId) {
-		return objects.get(SonarServer.class, serverId);
+	public SonarServer getServer(final int serverId) {
+		return objects.executeInTransaction(new TransactionCallback<SonarServer>() {
+			@Override
+			public SonarServer doInTransaction() {
+				return objects.get(SonarServer.class, serverId);
+			}
+		});
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SonarServer getServer(String name) {
-		try {
-			return objects.find(SonarServer.class, Query.select().where("NAME = ?", name).limit(1))[0];
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
+	public SonarServer getServer(final String name) {
+		return objects.executeInTransaction(new TransactionCallback<SonarServer>() {
+			@Override
+			public SonarServer doInTransaction() {
+				try {
+					return objects.find(SonarServer.class, Query.select().where("NAME = ?", name).limit(1))[0];
+				} catch (IndexOutOfBoundsException e) {
+					return null;
+				}
+			}
+		});
 	}
 
 	/**
@@ -127,31 +146,22 @@ public class SonarServerManagerService implements SonarServerManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SonarServer addServer(String name, String description, String host, String username, String password,
-					String jdbcUrl, String jdbcDriver, String jdbcUsername, String jdbcPassword) {
+	public SonarServer addServer(final String name, final String description, final String host,
+					final String username, final String password, final String jdbcUrl, final String jdbcDriver,
+					final String jdbcUsername, final String jdbcPassword) {
 		logger.debug("Adding a new server with name " + name);
-		SonarServer server = objects.create(SonarServer.class, new DBParam("NAME", name), new DBParam("HOST", host));
-		server.setDescription(description);
-		server.setUsername(username);
-		server.setPassword(password);
-		server.setJDBCResource(getJdbcResource(null, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword));
-		server.save();
-		return server;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SonarServer addServer(SonarServer server) {
-		checkNotNull(server, "server argument may NOT be null");
-		logger.debug("Adding (copy) a new server with name " + server.getName());
-		SonarServer newServer = addServer(server.getName(), server.getDescription(), server.getHost(),
-			server.getUsername(), server.getPassword());
-		if (server.getJDBCResource() != null) {
-			newServer.setJDBCResource(copyJdbcResource(server.getJDBCResource()));
-		}
-		return newServer;
+		return objects.executeInTransaction(new TransactionCallback<SonarServer>() {
+			@Override
+			public SonarServer doInTransaction() {
+				SonarServer server = objects.create(SonarServer.class, new DBParam("NAME", name), new DBParam("HOST", host));
+				server.setDescription(description);
+				server.setUsername(username);
+				server.setPassword(password);
+				server.setJDBCResource(getJdbcResource(null, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword));
+				server.save();
+				return server;
+			}
+		});
 	}
 
 	/**
@@ -181,49 +191,21 @@ public class SonarServerManagerService implements SonarServerManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SonarServer updateServer(SonarServer server) {
-		checkNotNull(server, "server argument may NOT be null");
-		if (server.getJDBCResource() != null){
-			server.getJDBCResource().save();
-		}
-		server.save();
-		return server;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeServer(int serverId) {
-		removeServer(objects.get(SonarServer.class, serverId));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeServer(SonarServer server) {
-		checkNotNull(server, "server argument may NOT be null");
-		logger.debug("Deleting server with ID: " + server.getID());
-		JDBCResource resource = server.getJDBCResource();
-		server.delete();
-		if (resource != null) {
-			resource.delete();
-		}
-	}
-
-	/**
-	 * Copy a {@link JDBCResource}
-	 * 
-	 * @param otherResource the {@link JDBCResource} to copy
-	 * @return the copy
-	 */
-	private JDBCResource copyJdbcResource(JDBCResource otherResource) {
-		if (otherResource == null) {
-			return null;
-		}
-		return getJdbcResource(null, otherResource.getUrl(), otherResource.getDriver(), otherResource.getUsername(),
-			otherResource.getPassword());
+	public void removeServer(final int serverId) {
+		objects.executeInTransaction(new TransactionCallback<Object>() {
+			@Override
+			public Object doInTransaction() {
+				SonarServer server = objects.get(SonarServer.class, serverId);
+				checkNotNull(server, "server argument may NOT be null");
+				logger.debug("Deleting server with ID: " + server.getID());
+				JDBCResource resource = server.getJDBCResource();
+				server.delete();
+				if (resource != null) {
+					resource.delete();
+				}
+				return null;
+			}
+		});
 	}
 
 	/**

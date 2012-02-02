@@ -22,7 +22,6 @@
 		<description>${project.description}</description>
 		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 		<version>${project.version}</version>
-		<application-version min="${atlassian.bamboo.version}" />
 	</plugin-info>
 
 	<!-- I 1 8 N   R E S O U R C E S -->
@@ -34,36 +33,34 @@
 		<description>Execute a Sonar Analysis using the Sonar Runner</description>
 		<category name="builder"/>
 		<category name="test"/>
-		<executable key="snr" nameKey="task.builder.sonar.executableName" pathHelpKey="task.builder.sonar.helpPath"/>
+		<executable key="snr" pathHelpKey="task.builder.sonar.helpPath"/>
 		<capabilityDefaultsHelper class="com.marvelution.bamboo.plugins.sonar.tasks.SonarRunnerCapabilityDefaultsHelper"/>
 		<configuration class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarRunnerBuildTaskConfigurator" />
 		<resource type="freemarker" name="edit" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarRunnerBuildTaskEdit.ftl"/>
 		<resource type="freemarker" name="view" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarRunnerBuildTaskView.ftl"/>
-		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-16.png"/>
+		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-80.png"/>
 	</taskType>
 	<taskType key="task.builder.sonar2" name="Sonar Maven 2.x" class="com.marvelution.bamboo.plugins.sonar.tasks.SonarMaven2BuildTask">
 		<description>Execute a Sonar Analysis using Maven 2.x</description>
 		<category name="builder"/>
 		<category name="test"/>
-		<executable key="mvn2" nameKey="builder.maven2.executableName" pathHelpKey="builder.maven2.helpPath"/>
+		<executable key="mvn2" pathHelpKey="builder.maven2.helpPath"/>
 		<configuration class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarMaven2BuildTaskConfigurator" />
-		<!-- Reuse the Maven 2 CapabilityHelper of Atlassian -->
-		<capabilityDefaultsHelper class="com.atlassian.bamboo.plugins.maven.task.Maven2CapabilityDefaultsHelper"/>
+		<capabilityDefaultsHelper class="com.marvelution.bamboo.plugins.sonar.tasks.SonarMaven2CapabilityDefaultsHelper"/>
 		<resource type="freemarker" name="edit" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarMaven2BuildTaskEdit.ftl"/>
 		<resource type="freemarker" name="view" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarMaven2BuildTaskView.ftl"/>
-		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-16.png"/>
+		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-80.png"/>
 	</taskType>
 	<taskType key="task.builder.sonar3" name="Sonar Maven 3.x" class="com.marvelution.bamboo.plugins.sonar.tasks.SonarMaven3BuildTask">
 		<description>Execute a Sonar Analysis using Maven 3.x</description>
 		<category name="builder"/>
 		<category name="test"/>
-		<executable key="mvn3" nameKey="builder.maven3.executableName" pathHelpKey="builder.maven3.helpPath"/>
+		<executable key="mvn3" pathHelpKey="builder.maven3.helpPath"/>
 		<configuration class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarMaven3BuildTaskConfigurator" />
-		<!-- Reuse the Maven 3 CapabilityHelper of Atlassian -->
-		<capabilityDefaultsHelper class="com.atlassian.bamboo.plugins.maven.task.Maven3CapabilityDefaultsHelper"/>
+		<capabilityDefaultsHelper class="com.marvelution.bamboo.plugins.sonar.tasks.SonarMaven3CapabilityDefaultsHelper"/>
 		<resource type="freemarker" name="edit" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarMaven3BuildTaskEdit.ftl"/>
 		<resource type="freemarker" name="view" location="com/marvelution/bamboo/plugins/sonar/tasks/configuration/sonarMaven3BuildTaskView.ftl"/>
-		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-16.png"/>
+		<resource type="download" name="icon" location="com/marvelution/bamboo/plugins/sonar/images/icon-80.png"/>
 	</taskType>
 
 	<!-- T A S K   P R O C E S S   C O M M A N D   D E C O R A T O R   DE F I N I T I O N S -->
@@ -244,9 +241,10 @@
 	</xwork>
 
 	<!-- C O M P O N E N T S -->
-	<component key="tx-processor" name="Transactional Annotation Processor" class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+	<!-- We cannot use this transactional annotation processor as it will fail any remote agents -->
+	<!-- component key="tx-processor" name="Transactional Annotation Processor" class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
 		<decription>Processes @Transactional annotations.</decription>
-	</component>
+	</component -->
 	<component key="sonar-server-manager" name="Sonar Server Manager Service" class="com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManagerService">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager</interface>
 	</component>

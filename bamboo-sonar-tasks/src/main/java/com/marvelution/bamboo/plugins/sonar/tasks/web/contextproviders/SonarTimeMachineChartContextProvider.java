@@ -38,10 +38,10 @@ import com.google.common.collect.Lists;
 import com.marvelution.bamboo.plugins.sonar.tasks.web.SonarConfiguration;
 import com.marvelution.bamboo.plugins.sonar.tasks.web.contextproviders.SonarConfigurationContextProvider;
 import com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.SonarMetricsManager;
-import com.marvelution.bamboo.plugins.sonar.wsclient.services.Project;
-import com.marvelution.bamboo.plugins.sonar.wsclient.services.ProjectQuery;
-import com.marvelution.bamboo.plugins.sonar.wsclient.services.Version;
-import com.marvelution.bamboo.plugins.sonar.wsclient.unmarshallers.ProjectUnmarshaller;
+import com.marvelution.gadgets.sonar.wsclient.services.Project;
+import com.marvelution.gadgets.sonar.wsclient.services.ProjectQuery;
+import com.marvelution.gadgets.sonar.wsclient.services.Version;
+import com.marvelution.gadgets.sonar.wsclient.unmarshallers.ProjectUnmarshaller;
 
 /**
  * {@link SonarConfigurationContextProvider} implementation specific for the Time Machine web panel

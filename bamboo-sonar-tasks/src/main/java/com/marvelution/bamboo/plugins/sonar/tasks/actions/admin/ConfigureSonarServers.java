@@ -213,7 +213,7 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 		if (serverManager.hasServer(getServerId())) {
 			SonarServer server = serverManager.getServer(serverId);
 			configrationService.disableSonarServerTaskJobs(server);
-			serverManager.removeServer(server);
+			serverManager.removeServer(serverId);
 			return SUCCESS;
 		} else {
 			addActionError(getText("sonar.global.errors.no.server.id", new String[] {"delete"}));
