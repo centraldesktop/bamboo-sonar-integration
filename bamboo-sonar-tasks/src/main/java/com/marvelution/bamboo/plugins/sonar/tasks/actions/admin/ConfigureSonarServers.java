@@ -539,7 +539,7 @@ public class ConfigureSonarServers extends BambooActionSupport implements Global
 				return getJdbcDriver();
 			} else if (method.getName().equals("getUsername")) {
 				return getJdbcUsername();
-			} else if (method.getName().equals("getpassword")) {
+			} else if (method.getName().equals("getPassword")) {
 				return getJdbcPassword();
 			}
 		}

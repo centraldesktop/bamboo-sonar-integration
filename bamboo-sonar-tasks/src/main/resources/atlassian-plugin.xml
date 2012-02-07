@@ -83,6 +83,13 @@
 		<decoratedTaskType key="task.builder.sonar" />
 	</taskProcessCommandDecorator>
 
+	<!-- P R O C E S S O R S -->
+	<buildProcessorServer key="sonar-build-password-processor" name="Sonar Build Password Processor"
+			class="com.marvelution.bamboo.plugins.sonar.tasks.processors.SonarBuildPasswordProcessor">
+		<skipIfFailed>false</skipIfFailed>
+		<description>Removed the Sonar passwords from the Meta Data list</description>
+	</buildProcessorServer>
+
 	<!-- W E B   R E S O U R C E S -->
 	<web-resource key="publisher-specific" name="Publisher Specific Gadget Resources">
 		<dependency>${atlassian.plugin.key}:commons</dependency>
@@ -249,7 +256,7 @@
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager</interface>
 	</component>
 	<component key="sonar-server-task-configration-service" name="Sonar Server Task Configration Service"
-		class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationServiceImpl">
+			class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationServiceImpl">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationService</interface>
 	</component>
 	<component key="sonarMetricsManager" name="Sonar Metrics Manager" class="com.marvelution.bamboo.plugins.sonar.tasks.web.metrics.DefaultSonarMetricsManager">
@@ -270,7 +277,7 @@
 
 	<!-- U P G R A D E   T A S K S -->
 	<component key="password-encryption-upgrade" name="Encrypt Unencrypted Task Passwords Upgrade Task"
-		class="com.marvelution.bamboo.plugins.sonar.tasks.upgrade.EncryptUnencryptedTaskPasswordsUpgradeTask" public="true">
+			class="com.marvelution.bamboo.plugins.sonar.tasks.upgrade.EncryptUnencryptedTaskPasswordsUpgradeTask" public="true">
 		<interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
 	</component>
 

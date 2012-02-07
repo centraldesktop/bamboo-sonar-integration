@@ -43,6 +43,7 @@ import com.atlassian.bamboo.v2.build.CurrentBuildResult;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.utils.process.ExternalProcess;
 import com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarConfigConstants;
+import com.marvelution.bamboo.plugins.sonar.tasks.processors.SonarBuildPasswordProcessor;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -99,6 +100,7 @@ public class SonarRunnerBuildTask implements TaskType {
 		buildLogger.getInterceptorStack().add(buildSuccessMatcher);
 		buildLogger.getInterceptorStack().add(recentLogLines);
 		buildLogger.getInterceptorStack().add(errorLines);
+		buildLogger.getInterceptorStack().add(new SonarBuildPasswordProcessor());
 		
 		try {
 			ExternalProcess externalProcess = processService.executeProcess(taskContext,
