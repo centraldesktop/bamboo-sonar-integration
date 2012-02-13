@@ -78,45 +78,19 @@
 					<include>**/*.properties</include>
 				</includes>
 			</resource>
+			<resource>
+				<directory>${basedir}/../bamboo-sonar-tasks/target/classes</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/**/SonarConfigConstants.class</include>
+					<include>**/**/SonarPredicates*.class</include>
+					<include>**/**/SonarTaskUtils.class</include>
+					<include>**/**/SonarTaskConfigurator.class</include>
+					<include>**/**/PluginHelper.class</include>
+					<include>**/**/plugin.properties</include>
+				</includes>
+			</resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.0</version>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>bamboo-sonar-tasks</artifactId>
-							<version>${project.version}</version>
-							<type>jar</type>
-							<overWrite>true</overWrite>
-							<includes>
-								**/**/SonarConfigConstants.class,
-								**/**/SonarPredicates*.class,
-								**/**/SonarTaskUtils.class,
-								**/**/SonarTaskConfigurator.class,
-								**/**/PluginHelper.class,
-								**/**/plugin.properties
-							</includes>
-						</artifactItem>
-					</artifactItems>
-					<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-					<overWriteReleases>true</overWriteReleases>
-					<overWriteSnapshots>true</overWriteSnapshots>
-				</configuration>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
