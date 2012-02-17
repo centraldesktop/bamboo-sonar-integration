@@ -120,6 +120,9 @@ public class SonarConfiguration {
 	 * @return the projectName
 	 */
 	public String getProjectName() {
+		if (StringUtils.isBlank(projectName)) {
+			return getProjectKey();
+		}
 		return projectName;
 	}
 	
@@ -162,10 +165,10 @@ public class SonarConfiguration {
 	/**
 	 * Is analyzed check method
 	 * 
-	 * @return <code>true</code> if the {@link #projectKey} and {@link #projectName} fields are not blank
+	 * @return <code>true</code> if the {@link #projectKey} is not blank
 	 */
 	public boolean isAnalyzed() {
-		return StringUtils.isNotBlank(projectKey) && StringUtils.isNotBlank(projectName);
+		return StringUtils.isNotBlank(projectKey);
 	}
 
 	/**

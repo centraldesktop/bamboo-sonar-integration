@@ -95,8 +95,7 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 				for (BuildResultsSummary buildResult : results) {
 					LOGGER.debug("Checking result of build: " + buildResult.getBuildKey() + " #"
 						+ buildResult.getBuildNumber());
-					if (buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_KEY)
-						&& buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_NAME)) {
+					if (buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_KEY)) {
 						config.setProjectKey(buildResult.getCustomBuildData().get(TRD_SONAR_PROJECT_KEY));
 						config.setProjectName(buildResult.getCustomBuildData().get(TRD_SONAR_PROJECT_NAME));
 						break;
