@@ -88,4 +88,7 @@
 		</package>
 	</xwork>
 
+	<!-- C O M P O N E N T S -->
+	<component key="sonar-bulk-action-registrar" name="Sonar Bulk Action Registrar" class="com.marvelution.bamboo.plugins.sonar.web.SonarBulkActionRegistrar" />
+
 </atlassian-plugin>
