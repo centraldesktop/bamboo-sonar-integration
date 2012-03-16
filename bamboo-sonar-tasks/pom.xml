@@ -268,8 +268,8 @@
 					<productDataVersion>${atlassian.bamboo.data.version}</productDataVersion>
 					<server>localhost</server>
 					<allowGoogleTracking>false</allowGoogleTracking>
+					<!-- TODO Add the instructions element -->
 					<libArtifacts>
-						<!-- Now to find a way to update the /webapp/WEB-INF/classes/applicationContext.xml to add the bulk actions -->
 						<libArtifact>
 							<groupId>${project.groupId}</groupId>
 							<artifactId>bamboo-sonar-web</artifactId>
