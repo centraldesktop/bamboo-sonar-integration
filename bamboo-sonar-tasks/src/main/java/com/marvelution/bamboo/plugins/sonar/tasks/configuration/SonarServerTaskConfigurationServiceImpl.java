@@ -50,7 +50,7 @@ import com.atlassian.bamboo.task.TaskManager;
 import com.atlassian.bamboo.task.TaskModuleDescriptor;
 import com.atlassian.bamboo.utils.error.SimpleErrorCollection;
 import com.atlassian.bamboo.webwork.util.ActionParametersMapImpl;
-import com.atlassian.event.EventManager;
+import com.atlassian.event.api.EventPublisher;
 import com.atlassian.spring.container.ContainerManager;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -66,12 +66,11 @@ import com.marvelution.bamboo.plugins.sonar.tasks.utils.SonarTaskUtils;
  *
  * @since 1.0.0
  */
-@SuppressWarnings("deprecation")
 public class SonarServerTaskConfigurationServiceImpl implements SonarServerTaskConfigurationService {
 
 	private final Logger logger = Logger.getLogger(SonarServerTaskConfigurationServiceImpl.class);
 	private final PlanManager planManager;
-	private final EventManager eventManager;
+	private final EventPublisher eventPublisher;
 	private TaskManager taskManager;
 	private TaskConfigurationService taskConfigurationService;
 	private Map<PlanKey, List<TaskDefinition>> validTaskDefinitions;
@@ -80,11 +79,11 @@ public class SonarServerTaskConfigurationServiceImpl implements SonarServerTaskC
 	 * Constructor
 	 *
 	 * @param planManager the {@link PlanManager} implementation
-	 * @param eventManager the {@link EventManager} implementation
+	 * @param eventManager the {@link EventPublisher} implementation
 	 */
-	public SonarServerTaskConfigurationServiceImpl(PlanManager planManager, EventManager eventManager) {
+	public SonarServerTaskConfigurationServiceImpl(PlanManager planManager, EventPublisher eventManager) {
 		this.planManager = planManager;
-		this.eventManager = eventManager;
+		this.eventPublisher = eventManager;
 	}
 
 	/**
@@ -180,7 +179,7 @@ public class SonarServerTaskConfigurationServiceImpl implements SonarServerTaskC
 	 */
 	private void publishBuildConfigurationUpdatedEventForPlan(PlanKey planKey) {
 		logger.debug("Publishing the BuildConfigrationUpdatedEvent for plan " + planKey.getKey());
-		eventManager.publishEvent(new BuildConfigurationUpdatedEvent(this, planKey));
+		eventPublisher.publish(new BuildConfigurationUpdatedEvent(this, planKey));
 	}
 
 	/**

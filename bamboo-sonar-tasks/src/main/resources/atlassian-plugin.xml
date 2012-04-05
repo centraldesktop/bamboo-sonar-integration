@@ -124,7 +124,11 @@
 	</web-resource>
 	<web-resource key="sonar-panel" name="Sonar Panel Resources">
 		<context>atl.general</context>
+		<dependency>${atlassian.plugin.key}:commons</dependency>
 		<dependency>${atlassian.plugin.key}:panel-css</dependency>
+		<resource type="download" name="panel.js" location="/com/marvelution/bamboo/plugins/sonar/tasks/scripts/panel.js">
+			<property key="content-type" value="text/javascript"/>
+        </resource>
 	</web-resource>
 	<web-resource key="sonar-admin" name="Sonar Admin Resources">
 		<context>atl.admin</context>
@@ -221,16 +225,16 @@
 	<xwork key="sonarWebActions" name="Sonar Web Actions">
 		<package name="sonarChainView" extends="chainViewResult">
 			<action name="viewChainSonarResult" class="com.marvelution.bamboo.plugins.sonar.tasks.web.actions.chain.ViewChainSonarResult">
-				<param name="chainEquiv">/chain/result/viewChainSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param>
-				<param name="jobEquiv">/build/result/viewBuildSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param>
+				<!-- param name="chainEquiv">/chain/result/viewChainSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param -->
+				<!-- param name="jobEquiv">/build/result/viewBuildSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param -->
 				<result name="success" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/chain/viewChainSonarResult.ftl</result>
 				<result name="error" type="freemarker">/error.ftl</result>
 			</action>
 		</package>
 		<package name="sonarBuildView" extends="buildResultView">
 			<action name="viewBuildSonarResult" class="com.marvelution.bamboo.plugins.sonar.tasks.web.actions.build.ViewBuildSonarResult">
-				<param name="chainEquiv">/chain/result/viewChainSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param>
-				<param name="jobEquiv">/build/result/viewBuildSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param>
+				<!-- param name="chainEquiv">/chain/result/viewChainSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param -->
+				<!-- param name="jobEquiv">/build/result/viewBuildSonarResult.action?planKey=${planKey}&amp;buildNumber=${buildNumber}</param -->
 				<result name="success" type="freemarker">/com/marvelution/bamboo/plugins/sonar/tasks/actions/build/viewBuildSonarResult.ftl</result>
 				<result name="error" type="freemarker">/error.ftl</result>
 			</action>

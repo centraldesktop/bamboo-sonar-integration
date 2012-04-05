@@ -34,14 +34,14 @@
 		[@ww.url id="editMetricUrl" action='editMetrics' namespace='/sonar/ajax']
 			[@ww.param name='buildKey']${plan.key}[/@ww.param]
 		[/@ww.url]
-		<a href="${editMetricUrl}" class="labels-edit" title="[@ww.text name='sonar.metrics.buttons.edit' /]">
+		<a href="${editMetricUrl}" class="metrics-edit" title="[@ww.text name='sonar.metrics.buttons.edit' /]">
 			[#if showIcon]
 				[@ui.icon type="edit" textKey="sonar.metrics.buttons.edit" showTitle=false /]
 			[/#if]
 		</a>
 		[@ww.text id='metricsEditShortcut' name='sonar.metrics.edit.shortcut'][@ww.param]{shortcut}[/@ww.param][/@ww.text]
 		<script type="text/javascript">
-			BAMBOO.LABELS.init({
+			BAMBOO.METRICS.init({
 				labelsDialog: {
 					header: "[@ww.text name='sonar.metrics.title' /]",
 					shortcutKey: "M"

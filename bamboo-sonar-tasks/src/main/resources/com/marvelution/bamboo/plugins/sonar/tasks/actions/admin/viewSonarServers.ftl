@@ -24,6 +24,7 @@
 </head>
 <body>
 	[#include "serverRunningWarning.ftl"]
+	[@ui.header pageKey="sonar.global.servers.heading" /]
 	<div class="toolbar">
 		<div class="aui-toolbar inline">
 			<ul class="toolbar-group">
@@ -33,7 +34,6 @@
 			</ul>
 		</div>
 	</div>
-	[@ui.header pageKey="sonar.global.servers.heading" /]
 	<p>[@ww.text name='sonar.global.servers.description' /]</p>
 	[@ww.actionmessage /]
 	[@ui.clear/]

@@ -21,7 +21,6 @@ package com.marvelution.bamboo.plugins.sonar.tasks.web.contextproviders;
 
 import static com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarConfigConstants.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,7 +29,9 @@ import org.apache.log4j.Logger;
 
 import com.atlassian.bamboo.build.Job;
 import com.atlassian.bamboo.plan.Plan;
-import com.atlassian.bamboo.resultsummary.BuildResultsSummary;
+import com.atlassian.bamboo.resultsummary.ResultsSummary;
+import com.atlassian.bamboo.resultsummary.ResultsSummaryCriteria;
+import com.atlassian.bamboo.resultsummary.ResultsSummaryManager;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.ContextProvider;
@@ -47,6 +48,8 @@ import com.marvelution.bamboo.plugins.sonar.tasks.web.SonarConfiguration;
 public class SonarConfigurationContextProvider implements ContextProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(SonarConfigurationContextProvider.class);
+
+	private ResultsSummaryManager summaryManager;
 
 	/**
 	 * {@inheritDoc}
@@ -73,6 +76,15 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 	}
 
 	/**
+	 * Setter for the {@link ResultsSummaryManager}
+	 * 
+	 * @param summaryManager the {@link ResultsSummaryManager} to set
+	 */
+	public void setResultsSummaryManager(ResultsSummaryManager summaryManager) {
+		this.summaryManager = summaryManager;
+	}
+
+	/**
 	 * Get the {@link SonarConfiguration} object from the given {@link Job}s {@link List}
 	 * 
 	 * @param jobs the {@link Job} {@link List} to get the {@link SonarConfiguration} from
@@ -89,10 +101,8 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 				config.setUsername(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_USERNAME));
 				config.setPassword(ENCRYPTOR.decrypt(taskDefinition.getConfiguration().get(CFG_SONAR_HOST_PASSWORD)));
 				// And get the Sonar project key and name form the job build results
-				List<BuildResultsSummary> results = job.getBuildResultSummaries();
-				Collections.sort(results);
-				Collections.reverse(results);
-				for (BuildResultsSummary buildResult : results) {
+				for (ResultsSummary buildResult : summaryManager.getResultSummaries(new ResultsSummaryCriteria(job
+					.getKey(), false))) {
 					LOGGER.debug("Checking result of build: " + buildResult.getBuildKey() + " #"
 						+ buildResult.getBuildNumber());
 					if (buildResult.getCustomBuildData().containsKey(TRD_SONAR_PROJECT_KEY)) {

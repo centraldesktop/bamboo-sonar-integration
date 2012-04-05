@@ -31,7 +31,7 @@
 	<div class="mod-header"><h3>[@ww.text name="sonar.project.configuration" /]</h3></div>
 	<div class="mod-content">
 	[#if sonarConfiguration.isAnalyzed()]
-		[#assign resource]<a href="${sonarConfiguration.host}/${sonarConfiguration.projectKey}">${sonarConfiguration.projectName}</a>[/#assign]
+		[#assign resource]<a href="${sonarConfiguration.host}/dashboard/index/${sonarConfiguration.projectKey}">${sonarConfiguration.projectName}</a>[/#assign]
 		[@ww.label labelKey='sonar.project.name' value='${resource}' escape='false' /]
 	[#else]
 		[@ww.text name='sonar.web.panel.project.not.analyzed' /]

@@ -99,7 +99,7 @@
 	border: 2px white;
 	float: left;
 	font-size: 0.90em;
-	height: 142px;
+	height: 170px;
 	margin: 0px;
 	overflow: hidden hidden;
 	padding: 0px 20px 0px 142px;
@@ -126,4 +126,18 @@
 	float: left;
 	margin: 81px 0px 0px -131px;
 	width: auto;
+}
+
+#metrics-dialog form.aui .text {
+	width: 400px;
+}
+
+#metrics-dialog .label,
+#metrics-dialog .metrics-edit {
+	display: none;
+}
+
+#metrics-dialog .remove-label-caption,
+#metrics-dialog .remove-label {
+	display: inline;
 }
