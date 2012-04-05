@@ -21,16 +21,14 @@ package com.marvelution.bamboo.plugins.sonar.tasks.web.metrics;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
-import com.atlassian.bamboo.bandana.PlanAwareBandanaContext;
 import com.atlassian.bamboo.plan.Plan;
-import com.atlassian.bandana.BandanaManager;
+import com.atlassian.sal.api.pluginsettings.PluginSettings;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.atlassian.sal.api.transaction.TransactionCallback;
+import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.user.User;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.marvelution.bamboo.plugins.sonar.tasks.utils.PluginHelper;
 
 /**
  * Default {@link SonarMetricsManager} implementation
@@ -39,23 +37,22 @@ import com.marvelution.bamboo.plugins.sonar.tasks.utils.PluginHelper;
  */
 public class DefaultSonarMetricsManager implements SonarMetricsManager {
 
-	public static final String BASE_BANDANA_KEY = PluginHelper.getPluginKey() + ":";
-	public static final String TIME_MACHINE_BASE_BANDANA_KEY = BASE_BANDANA_KEY + "SonarTimeMachineMetrics:";
-	public static final String GLOBAL_TIME_MACHINE_BANDANA_KEY = TIME_MACHINE_BASE_BANDANA_KEY + "Global";
+	public static final String TMM_SETTING_KEY = "time.machine.metrics";
 	public static final List<String> DEFAULT_METRICS = ImmutableList.of("violations_density", "complexity",
 		"coverage");
 
-	private static final Logger LOGGER = Logger.getLogger(DefaultSonarMetricsManager.class);
-
-	private final BandanaManager bandanaManager;
+	private final PluginSettingsFactory settingsFactory;
+	private final TransactionTemplate transactionTemplate;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param bandanaManager the {@link BandanaManager} implementation
+	 * @param settingsFactory the {@link PluginSettingsFactory} implementation
+	 * @param transactionTemplate the {@link TransactionTemplate} implementation
 	 */
-	public DefaultSonarMetricsManager(BandanaManager bandanaManager) {
-		this.bandanaManager = bandanaManager;
+	public DefaultSonarMetricsManager(PluginSettingsFactory settingsFactory, TransactionTemplate transactionTemplate) {
+		this.settingsFactory = Preconditions.checkNotNull(settingsFactory, "settingsFactory");
+		this.transactionTemplate = Preconditions.checkNotNull(transactionTemplate, "transactionTemplate");
 	}
 
 	/**
@@ -69,24 +66,19 @@ public class DefaultSonarMetricsManager implements SonarMetricsManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getTimeMachineChartMetrics(Plan plan, User user) {
-		LOGGER.debug("Getting metrics for plan " + plan.getKey() + " with Id " + plan.getId() + " using key: "
-			+ getTimeMachineMetricsBandanaKey(plan, user));
-		List<String> metrics = (List<String>) bandanaManager.getValue(new PlanAwareBandanaContext(plan.getId()),
-			getTimeMachineMetricsBandanaKey(plan, user));
-		if (metrics == null) {
-			metrics = Lists.newArrayList();
-		}
-		if (metrics.isEmpty()) {
-			metrics.addAll(DEFAULT_METRICS);
-		}
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Got the metrics [" + StringUtils.join(metrics, ",") + "] for Plan: "
-				+ plan.getKey() + " with Id " + plan.getId());
-		}
-		return metrics;
+	public List<String> getTimeMachineChartMetrics(final Plan plan, final User user) {
+		return transactionTemplate.execute(new TransactionCallback<List<String>>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<String> doInTransaction() {
+				List<String> metrics = (List<String>) getPluginSettings(plan).get(getSettingKey(user));
+				if (metrics == null || metrics.isEmpty()) {
+					return DEFAULT_METRICS;
+				}
+				return metrics;
+			}
+		});
 	}
 
 	/**
@@ -101,27 +93,43 @@ public class DefaultSonarMetricsManager implements SonarMetricsManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTimeMachineMetrics(Plan plan, User user, List<String> metrics) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Storing the metrics [" + StringUtils.join(metrics, ",") + "] for Plan: " + plan.getKey()
-				+ " with Id " + plan.getId() + " using key: " + getTimeMachineMetricsBandanaKey(plan, user));
-		}
-		bandanaManager.setValue(new PlanAwareBandanaContext(plan.getId()),
-			getTimeMachineMetricsBandanaKey(plan, user), metrics);
+	public void setTimeMachineMetrics(final Plan plan, final User user, final List<String> metrics) {
+		transactionTemplate.execute(new TransactionCallback<Object>() {
+			@Override
+			public Object doInTransaction() {
+				getPluginSettings(plan).put(getSettingKey(user), metrics);
+				return null;
+			}
+		});
 	}
 
 	/**
-	 * Getter for the time machine metrics bandana key
+	 * Getter for the {@link PluginSettings} for the given {@link Plan}
 	 * 
-	 * @param plan the {@link Plan}
-	 * @param user the logged in {@link User}
-	 * @return the bandana key
+	 * @param plan the {@link Plan} to get the {@link PluginSettings} for
+	 * @return {@link Plan} Specific {@link PluginSettings} is the Plan is not <code>null</code>, the global
+	 *         {@link PluginSettings} are returned otherwise
 	 */
-	private String getTimeMachineMetricsBandanaKey(Plan plan, User user) {
-		if (user == null) {
-			return GLOBAL_TIME_MACHINE_BANDANA_KEY;
+	private PluginSettings getPluginSettings(Plan plan) {
+		if (plan != null) {
+			return settingsFactory.createSettingsForKey(plan.getKey());
 		} else {
-			return TIME_MACHINE_BASE_BANDANA_KEY + user.getName();
+			return settingsFactory.createGlobalSettings();
+		}
+	}
+
+	/**
+	 * Getter for the Setting key for the metrics
+	 * 
+	 * @param user the {@link User} to get the key for
+	 * @return if the {@link User} is not <code>null</code> that then {@link User} specific key if returned, otherwise
+	 *         the global key is returned
+	 */
+	private String getSettingKey(User user) {
+		if (user != null) {
+			return TMM_SETTING_KEY + "." + user.getFullName();
+		} else {
+			return TMM_SETTING_KEY;
 		}
 	}
 

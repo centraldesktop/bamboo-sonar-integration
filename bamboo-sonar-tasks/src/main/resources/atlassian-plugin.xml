@@ -277,6 +277,12 @@
 	<component-import key="ao" name="Active Objects service" interface="com.atlassian.activeobjects.external.ActiveObjects">
 		<description>Component to access Active Objects functionality from the plugin</description>
 	</component-import>
+	<component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory">
+		<description>Component to access the Plugin Settings functionality from the plugin</description>
+	</component-import>
+	<component-import key="transactionTemplate" interface="com.atlassian.sal.api.transaction.TransactionTemplate">
+		<description>Component to access the Transaction Template functionality from the plugin</description>
+	</component-import>
 
 	<!-- A C T I V E   O B J E C T S -->
 	<ao key="ao-sonar-module">
@@ -288,6 +294,10 @@
 	<!-- U P G R A D E   T A S K S -->
 	<component key="password-encryption-upgrade" name="Encrypt Unencrypted Task Passwords Upgrade Task"
 			class="com.marvelution.bamboo.plugins.sonar.tasks.upgrade.EncryptUnencryptedTaskPasswordsUpgradeTask" public="true">
+		<interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
+	</component>
+	<component key="time-machine-metrics-upgrade" name="Time Machine Metrics Upgrade Task"
+			class="com.marvelution.bamboo.plugins.sonar.tasks.upgrade.TimeMachineMetricsUpgradeTask" public="true">
 		<interface>com.atlassian.sal.api.upgrade.PluginUpgradeTask</interface>
 	</component>
 
