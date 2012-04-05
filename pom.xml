@@ -140,6 +140,26 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>license-header</id>
+			<build>
+				<plugins>
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>com.mycila.maven-license-plugin</groupId>
+						<artifactId>maven-license-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>**/panel.js</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+			</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<developers>
 		<developer>
 			<id>markrekveld</id>
