@@ -272,6 +272,7 @@
 					<product>bamboo</product>
 					<productVersion>${atlassian.bamboo.version}</productVersion>
 					<productDataVersion>${atlassian.bamboo.data.version}</productDataVersion>
+					<productDataPath>${basedir}/src/test/resources/generated-test-resources.zip</productDataPath>
 					<server>localhost</server>
 					<allowGoogleTracking>false</allowGoogleTracking>
 					<pluginKey>${atlassian.plugin.key}</pluginKey>
