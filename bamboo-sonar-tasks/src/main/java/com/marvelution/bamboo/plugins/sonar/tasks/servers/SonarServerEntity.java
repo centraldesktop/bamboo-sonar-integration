@@ -19,8 +19,6 @@
 
 package com.marvelution.bamboo.plugins.sonar.tasks.servers;
 
-import java.sql.SQLException;
-
 import net.java.ao.EntityManager;
 
 import org.apache.log4j.Logger;
@@ -94,7 +92,7 @@ public class SonarServerEntity {
 		try {
 			entityManager.delete(server);
 			checkAutoCommit();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error("Failed to delete the server", e);
 		}
 	}
@@ -110,7 +108,7 @@ public class SonarServerEntity {
 				logger.debug("Auto-commit is off, calling commit() manually...");
 				entityManager.getProvider().getConnection().commit();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error("Failed to check auto-commit status and/or manually commiting the server changes", e);
 		}
 	}

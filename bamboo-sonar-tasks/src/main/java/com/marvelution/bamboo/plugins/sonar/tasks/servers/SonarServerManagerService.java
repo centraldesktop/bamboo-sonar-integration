@@ -23,8 +23,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 
 import net.java.ao.DBParam;
 import net.java.ao.Query;

@@ -87,7 +87,7 @@
 			<artifactId>sonar-gadgets</artifactId>
 			<version>${sonar.gadgets.version}</version>
 			<type>jar</type>
-			<scope>provided</scope>
+			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>com.google.collections</groupId>
@@ -278,10 +278,51 @@
 					<instructions>
 						<Bundle-SymbolicName>${atlassian.plugin.key}</Bundle-SymbolicName>
 						<Import-Package>
-							<!-- TODO Import-Package -->
+							com.atlassian.bamboo.bandana*;version="0.0",
+							com.atlassian.bamboo.build*;version="0.0",
+							com.atlassian.bamboo.builder*;version="0.0",
+							com.atlassian.bamboo.chains*;version="0.0",
+							com.atlassian.bamboo.collections*;version="0.0",
+							com.atlassian.bamboo.configuration*;version="0.0",
+							com.atlassian.bamboo.event*;version="0.0",
+							com.atlassian.bamboo.labels*;version="0.0",
+							com.atlassian.bamboo.plan*;version="0.0",
+							com.atlassian.bamboo.process*;version="0.0",
+							com.atlassian.bamboo.resultsummary*;version="0.0",
+							com.atlassian.bamboo.security*;version="0.0",
+							com.atlassian.bamboo.task*;version="0.0",
+							com.atlassian.bamboo.utils*;version="0.0",
+							com.atlassian.bamboo.v2.build*;version="0.0",
+							com.atlassian.bamboo.webwork*;version="0.0",
+							com.atlassian.bamboo.ww2*;version="0.0",
+							com.atlassian.bandana*;version="0.0",
+							com.atlassian.event*;version="0.0",
+							com.atlassian.plugin*;version="0.0",
+							com.atlassian.sal.api*;version="0.0",
+							com.atlassian.spring*;version="0.0",
+							com.atlassian.user*;version="0.0",
+							com.atlassian.utils.process*;version="0.0",
+							com.google.common.base*;version="0.0",
+							com.google.common.collect*;version="0.0",
+							javax.crypto*;version="0.0",
+							javax.net*;version="0.0",
+							javax.servlet*;version="0.0",
+							javax.ws.rs*;version="0.0",
+							javax.xml.bind*;version="0.0",
+							net.java.ao*;version="0.0",
+							org.apache.commons.codec*;version="0.0",
+							org.apache.commons.lang*;version="0.0",
+							org.apache.commons.io*;version="0.0",
+							org.apache.http*;version="0.0",
+							org.apache.log4j*;version="0.0",
+							org.apache.maven.model*;version="0.0",
+							org.jetbrains.annotations*;version="0.0"
 						</Import-Package>
 						<Private-Package>
-							<!-- TODO Private-Package -->
+							com.marvelution.security.crypto*,
+							org.eclipse.persistence*,
+							org.json.simple*,
+							org.sonar.wsclient*
 						</Private-Package>
 						<DynamicImport-Package>
 							com.atlassian.activeobjects.external;version="0.0"
