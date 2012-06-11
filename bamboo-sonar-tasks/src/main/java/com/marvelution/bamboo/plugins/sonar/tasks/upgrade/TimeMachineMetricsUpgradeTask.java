@@ -80,7 +80,7 @@ public class TimeMachineMetricsUpgradeTask implements PluginUpgradeTask {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Message> doUpgrade() throws Exception {
-		for (Plan plan : planManager.getAllPlans()) {
+		for (Plan plan : planManager.getAllPlansUnrestricted()) {
 			PlanAwareBandanaContext context = PlanAwareBandanaContext.forPlan(plan);
 			for (String key : bandanaManager.getKeys(context)) {
 				if (key.startsWith(TIME_MACHINE_BASE_BANDANA_KEY)) {

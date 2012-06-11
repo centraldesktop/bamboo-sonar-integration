@@ -31,14 +31,13 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.atlassian.bamboo.build.Buildable;
+import com.atlassian.bamboo.plan.Plan;
 import com.atlassian.bamboo.plan.PlanManager;
 import com.atlassian.bamboo.task.TaskConfigurationService;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.sal.api.message.Message;
 import com.atlassian.sal.api.upgrade.PluginUpgradeTask;
 import com.atlassian.spring.container.ContainerManager;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -75,15 +74,19 @@ public class EncryptUnencryptedTaskPasswordsUpgradeTask implements PluginUpgrade
 	 */
 	@Override
 	public Collection<Message> doUpgrade() throws Exception {
-		for (Buildable buildable : getBuildables()) {
-			logger.info("Check Sonar Tasks for " + buildable.getBuildKey());
-			for (TaskDefinition taskDefinition : Iterables.filter(
-				buildable.getBuildDefinition().getTaskDefinitions(), SonarPredicates.isSonarTask())) {
-				TaskDefinition newTaskDefinition = getTaskConfigurationService().editTask(buildable.getPlanKey(),
-					taskDefinition.getId(), taskDefinition.getUserDescription(),
-					getTaskConfigurationMap(taskDefinition), taskDefinition.getRootDirectorySelector());
-				logger.info("Encrypted task passwords of task [" + newTaskDefinition.getId() + "] of type ["
-					+ newTaskDefinition.getPluginKey() + "]");
+		for (Plan buildable : planManager.getAllPlansUnrestricted()) {
+			if (Iterables.any(buildable.getBuildDefinition().getTaskDefinitions(), SonarPredicates.isSonarTask())) {
+				logger.info("Check Sonar Tasks for " + buildable.getBuildKey());
+				for (TaskDefinition taskDefinition : Iterables.filter(
+					buildable.getBuildDefinition().getTaskDefinitions(), SonarPredicates.isSonarTask())) {
+					TaskDefinition newTaskDefinition = getTaskConfigurationService().editTask(buildable.getPlanKey(),
+						taskDefinition.getId(), taskDefinition.getUserDescription(),
+						getTaskConfigurationMap(taskDefinition), taskDefinition.getRootDirectorySelector());
+					logger.info("Encrypted task passwords of task [" + newTaskDefinition.getId() + "] of type ["
+						+ newTaskDefinition.getPluginKey() + "]");
+				}
+			} else {
+				logger.info(buildable.getBuildKey() + " has no Sonar Tasks to check");
 			}
 		}
 		return null;
@@ -111,15 +114,6 @@ public class EncryptUnencryptedTaskPasswordsUpgradeTask implements PluginUpgrade
 	@Override
 	public String getShortDescription() {
 		return "Encrypt all Unencrypted passwords configured in Sonar Tasks.";
-	}
-
-	/**
-	 * Getter for buildables
-	 *
-	 * @return the buildables
-	 */
-	private Collection<Buildable> getBuildables() {
-		return Collections2.filter(planManager.getAllPlans(Buildable.class), SonarPredicates.hasSonarTasks());
 	}
 
 	/**
