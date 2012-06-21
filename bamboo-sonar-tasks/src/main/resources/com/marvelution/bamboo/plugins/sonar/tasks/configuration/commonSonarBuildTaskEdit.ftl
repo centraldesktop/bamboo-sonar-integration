@@ -18,6 +18,7 @@
  --]
 
 [@ui.bambooSection titleKey='sonar.extra.configuration']
+	[@ww.textfield labelKey='sonar.profile' name='sonarProfile' cssClass="long-field" /]
 	[@ww.textfield labelKey='sonar.language' name='sonarLanguage' cssClass="long-field" /]
 	[@ww.textfield labelKey='sonar.java.source' name='sonarJavaSource' cssClass="long-field" /]
 	[@ww.textfield labelKey='sonar.java.target' name='sonarJavaTarget' cssClass="long-field" /]

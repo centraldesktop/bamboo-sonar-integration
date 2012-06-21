@@ -45,6 +45,9 @@ public abstract class AbstractSonarExtraProjectConfigurationCommandDecorator ext
 	protected Map<String, String> addSonarExtraProjectProperties(@NotNull TaskContext taskContext) {
 		Map<String, String> properties = Maps.newHashMap();
 		final ConfigurationMap configuration = taskContext.getConfigurationMap();
+		if (StringUtils.isNotBlank(configuration.get(CFG_SONAR_PROFILE))) {
+			properties.put("sonar.profile", configuration.get(CFG_SONAR_PROFILE));
+		}
 		if (StringUtils.isNotBlank(configuration.get(CFG_SONAR_LANGUAGE))) {
 			properties.put("sonar.language", configuration.get(CFG_SONAR_LANGUAGE));
 		}

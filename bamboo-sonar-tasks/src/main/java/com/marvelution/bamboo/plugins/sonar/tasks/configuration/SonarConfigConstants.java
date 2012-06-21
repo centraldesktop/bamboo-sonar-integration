@@ -110,6 +110,7 @@ public interface SonarConfigConstants {
 	/**
 	 * Advanced Options
 	 */
+	String CFG_SONAR_PROFILE = "sonarProfile";
 	String CFG_SONAR_LANGUAGE = "sonarLanguage";
 	String CFG_SONAR_JAVA_SOURCE = "sonarJavaSource";
 	String CFG_SONAR_JAVA_TARGET = "sonarJavaTarget";

@@ -39,7 +39,7 @@
 	</scm>
 
 	<properties>
-		<atlassian.amps.version>3.9.2</atlassian.amps.version>
+		<atlassian.amps.version>3.11</atlassian.amps.version>
 		<atlassian.plugin.name>Marvelution Bamboo Sonar Tasks Plugin</atlassian.plugin.name>
 		<atlassian.plugin.key>${atlassian.plugin.key.base}.tasks</atlassian.plugin.key>
 		<sonar.gadgets.version>1.7.0-SNAPSHOT</sonar.gadgets.version>
