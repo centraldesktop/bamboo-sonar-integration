@@ -24,5 +24,7 @@
 		<menu name="Overview">
 			<item name="Introduction" href="./index.html" />
 		</menu>
+
+		<menu ref="modules" />
 	</body>
 </project>

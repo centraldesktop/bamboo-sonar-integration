@@ -35,7 +35,7 @@
 		</menu>
 
 		<menu name="Documentation">
-			<item name="Download" href="http://docs.marvelution.com/display/REPO/Bamboo+Sonar+Integration+Repository+Directory" />
+			<item name="Download" href="http://docs.marvelution.com/display/REPO/Bamboo+Sonar+Integration" />
 			<item name="Installation Guide" href="http://docs.marvelution.com/display/BAMSON/Installation+Guide" />
 			<item name="Configuration Guide" href="http://docs.marvelution.com/display/BAMSON/Administrators+Guide" />
 		</menu>
