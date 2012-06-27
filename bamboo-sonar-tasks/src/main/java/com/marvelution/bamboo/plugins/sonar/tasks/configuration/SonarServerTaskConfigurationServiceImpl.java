@@ -138,7 +138,7 @@ public class SonarServerTaskConfigurationServiceImpl implements SonarServerTaskC
 		for (Job job : getSonarServerDependingJobs(server)) {
 			logger.info("Suspending all build activity for job " + job.getKey());
 			job.setSuspendedFromBuilding(true);
-			planManager.setPlanSuspendedState(job, true);
+			planManager.setPlanSuspendedState(PlanKeys.getPlanKey(job.getKey()), true);
 			publishBuildConfigurationUpdatedEventForPlan(PlanKeys.getPlanKey(job.getKey()));
 		}
 	}
