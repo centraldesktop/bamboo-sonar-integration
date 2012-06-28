@@ -23,7 +23,7 @@
 	<parent>
 		<artifactId>bamboo-sonar-integration</artifactId>
 		<groupId>com.marvelution.bamboo.plugins</groupId>
-		<version>1.6.0-SNAPSHOT</version>
+		<version>1.5.1</version>
 	</parent>
 	<artifactId>bamboo-sonar-web</artifactId>
 	<packaging>jar</packaging>
@@ -36,7 +36,7 @@
 		<connection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git/bamboo-sonar-web</connection>
 		<developerConnection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git/bamboo-sonar-web</developerConnection>
 		<url>http://fisheye.marvelution.com/browse/bamboo-sonar-integration/bamboo-sonar-web</url>
-	  <tag>HEAD</tag>
+	  <tag>bamboo-sonar-integration-1.5.1</tag>
   </scm>
 
 	<properties>
