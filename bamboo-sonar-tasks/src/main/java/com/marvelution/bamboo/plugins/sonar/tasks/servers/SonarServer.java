@@ -22,7 +22,6 @@ package com.marvelution.bamboo.plugins.sonar.tasks.servers;
 import net.java.ao.Entity;
 import net.java.ao.Implementation;
 import net.java.ao.Preload;
-import net.java.ao.Searchable;
 import net.java.ao.schema.Ignore;
 import net.java.ao.schema.NotNull;
 
@@ -42,7 +41,7 @@ public interface SonarServer extends Entity {
 	 * 
 	 * @return the name
 	 */
-	@Searchable
+	@NotNull
 	String getName();
 
 	/**

@@ -83,7 +83,7 @@
 
 	<properties>
 		<project.jdk.revision>1.6</project.jdk.revision>
-		<atlassian.bamboo.version>4.1</atlassian.bamboo.version>
+		<atlassian.bamboo.version>4.0</atlassian.bamboo.version>
 		<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
 		<sonar.version>3.0.1</sonar.version>
 		<atlassian.plugin.key.base>${project.groupId}.sonar</atlassian.plugin.key.base>

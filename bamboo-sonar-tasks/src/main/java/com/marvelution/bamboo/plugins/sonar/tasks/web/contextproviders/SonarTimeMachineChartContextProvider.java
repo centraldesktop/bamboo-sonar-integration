@@ -19,6 +19,7 @@
 
 package com.marvelution.bamboo.plugins.sonar.tasks.web.contextproviders;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.sonar.wsclient.Sonar;
 import org.sonar.wsclient.connectors.ConnectionException;
 import org.sonar.wsclient.connectors.HttpClient4Connector;
+import org.sonar.wsclient.services.Server;
 
 import com.atlassian.bamboo.build.Buildable;
 import com.atlassian.bamboo.build.Job;
@@ -61,40 +63,48 @@ public class SonarTimeMachineChartContextProvider extends SonarConfigurationCont
 	@Override
 	public Map<String, Object> getContextMap(Map<String, Object> context) {
 		super.getContextMap(context);
-		Chain chain = getChainPlan(context);
-		User user = authenticationContext.getUser();
-		List<String> metrics = null;
-		if (chain != null && user != null) {
-			LOGGER.debug("Checking if user " + user.getName() + " has custom metrics");
-			metrics = sonarMetricsManager.getTimeMachineChartMetrics(chain, user);
-		}
-		if (metrics == null || metrics.isEmpty()) {
-			metrics = sonarMetricsManager.getTimeMachineChartMetrics(chain);
-		}
-		context.put("metrics", metrics);
-		SonarConfiguration sonarConfiguration = (SonarConfiguration) context.get("sonarConfiguration");
-		if (sonarConfiguration.isAnalyzed()) {
-			try {
-				Sonar sonar = new Sonar(new HttpClient4Connector(sonarConfiguration.getSonarHost()));
-				String json = sonar.getConnector().execute(
-					new ProjectQuery(sonarConfiguration.getProjectKey()).setVersions(true));
-				List<String> versionIds = Lists.newArrayList();
-				if (json != null) {
-					Project project = new ProjectUnmarshaller().toModel(json);
-					for (Version version : project.getVersions()) {
-						versionIds.add(Integer.toString(version.getSid()));
+		Collection<String> errors = Lists.newArrayList();
+		Server serverInfo = (Server) context.get(SONAR_SERVER_INFO_CONTEXT_KEY);
+		if (serverInfo != null && Double.valueOf(serverInfo.getVersion()) < 3.0D) {
+			Chain chain = getChainPlan(context);
+			User user = authenticationContext.getUser();
+			List<String> metrics = null;
+			if (chain != null && user != null) {
+				LOGGER.debug("Checking if user " + user.getName() + " has custom metrics");
+				metrics = sonarMetricsManager.getTimeMachineChartMetrics(chain, user);
+			}
+			if (metrics == null || metrics.isEmpty()) {
+				metrics = sonarMetricsManager.getTimeMachineChartMetrics(chain);
+			}
+			context.put("metrics", metrics);
+			SonarConfiguration sonarConfiguration = (SonarConfiguration) context.get("sonarConfiguration");
+			if (sonarConfiguration.isAnalyzed()) {
+				try {
+					Sonar sonar = new Sonar(new HttpClient4Connector(sonarConfiguration.getSonarHost()));
+					String json = sonar.getConnector().execute(
+						new ProjectQuery(sonarConfiguration.getProjectKey()).setVersions(true));
+					List<String> versionIds = Lists.newArrayList();
+					if (json != null) {
+						Project project = new ProjectUnmarshaller().toModel(json);
+						for (Version version : project.getVersions()) {
+							versionIds.add(Integer.toString(version.getSid()));
+						}
+					}
+					context.put("versions", StringUtils.join(versionIds, ","));
+				} catch (ConnectionException e) {
+					LOGGER.error("Failed to get version IDs from Sonar: " + e.getMessage());
+					if (e.getCause() instanceof HttpHostConnectException) {
+						context.put("exception", e.getCause());
+					} else {
+						context.put("exception", e);
 					}
 				}
-				context.put("versions", StringUtils.join(versionIds, ","));
-			} catch (ConnectionException e) {
-				LOGGER.error("Failed to get version IDs from Sonar: " + e.getMessage());
-				if (e.getCause() instanceof HttpHostConnectException) {
-					context.put("exception", e.getCause());
-				} else {
-					context.put("exception", e);
-				}
 			}
+		} else {
+			errors.add("The Time Machine Chart is nolonger supported with Sonar 3.0 and up.");
+			errors.add("We are working on implementing a new Panel. (<a href='http://issues.marvelution.com/browse/BAMSON-64'>BAMSON-64</a>)");
 		}
+		context.put("errors", errors);
 		return context;
 	}
 

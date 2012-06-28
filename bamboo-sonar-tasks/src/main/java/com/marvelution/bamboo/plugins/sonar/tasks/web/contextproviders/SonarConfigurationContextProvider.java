@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.sonar.wsclient.Sonar;
+import org.sonar.wsclient.services.Server;
+import org.sonar.wsclient.services.ServerQuery;
 
 import com.atlassian.bamboo.build.Job;
 import com.atlassian.bamboo.plan.Plan;
@@ -37,6 +40,7 @@ import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.ContextProvider;
 import com.google.common.collect.Iterables;
 import com.marvelution.bamboo.plugins.sonar.tasks.predicates.SonarPredicates;
+import com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarClientFactory;
 import com.marvelution.bamboo.plugins.sonar.tasks.utils.SonarTaskUtils;
 import com.marvelution.bamboo.plugins.sonar.tasks.web.SonarConfiguration;
 
@@ -49,7 +53,11 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(SonarConfigurationContextProvider.class);
 
+	public static final String SONAR_CONFIGURATION_CONTEXT_KEY = "sonarConfiguration";
+	public static final String SONAR_SERVER_INFO_CONTEXT_KEY = "sonarServerInfo";
+
 	private ResultsSummaryManager summaryManager;
+	private SonarClientFactory clientFactory;
 
 	/**
 	 * {@inheritDoc}
@@ -70,9 +78,25 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 					+ entry.getValue().getClass().getName());
 			}
 		}
-		context.put("sonarConfiguration",
-			getSonarConfigurationFromJobs(SonarTaskUtils.getJobsWithSonarTasks((Plan) context.get("plan"))));
+		SonarConfiguration config = getSonarConfigurationFromJobs(SonarTaskUtils.getJobsWithSonarTasks((Plan) context.get("plan")));
+		context.put(SONAR_CONFIGURATION_CONTEXT_KEY, config);
+		try {
+			Sonar sonar = clientFactory.create(config.getSonarHost());
+			context.put(SONAR_SERVER_INFO_CONTEXT_KEY, sonar.find(new ServerQuery()));
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			context.put(SONAR_SERVER_INFO_CONTEXT_KEY, new Server().setVersion("0.0"));
+		}
 		return context;
+	}
+
+	/**
+	 * Getter for summaryManager
+	 *
+	 * @return the summaryManager
+	 */
+	public ResultsSummaryManager getSummaryManager() {
+		return summaryManager;
 	}
 
 	/**
@@ -82,6 +106,24 @@ public class SonarConfigurationContextProvider implements ContextProvider {
 	 */
 	public void setResultsSummaryManager(ResultsSummaryManager summaryManager) {
 		this.summaryManager = summaryManager;
+	}
+
+	/**
+	 * Getter for clientFactory
+	 *
+	 * @return the clientFactory
+	 */
+	public SonarClientFactory getClientFactory() {
+		return clientFactory;
+	}
+
+	/**
+	 * Setter for clientFactory
+	 *
+	 * @param clientFactory the clientFactory to set
+	 */
+	public void setClientFactory(SonarClientFactory clientFactory) {
+		this.clientFactory = clientFactory;
 	}
 
 	/**

@@ -21,7 +21,11 @@
 <div class="module">
 	<div class="mod-header"><h3>[@ww.text name="sonar.panel.time.machine" /]</h3></div>
 	<div class="mod-content">
-	[#if sonarConfiguration.isAnalyzed()]
+	[#if errors.size() > 0]
+		[#foreach error in errors]
+			${error}<br />
+		[/#foreach]
+	[#elseif sonarConfiguration.isAnalyzed()]
 		[#if exception!?has_content ]
 			<div class="aui-message error">
 				<p class="title">[@ww.text name="sonar.panel.time.machine.error" /]<em>${exception.message}</em></p>

@@ -265,6 +265,9 @@
 	<component key="sonar-server-manager" name="Sonar Server Manager Service" class="com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManagerService">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarServerManager</interface>
 	</component>
+	<component key="sonar-client-factory" name="Sonar Client Factory Service" class="com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarClientFactoryService">
+		<interface>com.marvelution.bamboo.plugins.sonar.tasks.servers.SonarClientFactory</interface>
+	</component>
 	<component key="sonar-server-task-configration-service" name="Sonar Server Task Configration Service"
 			class="com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationServiceImpl">
 		<interface>com.marvelution.bamboo.plugins.sonar.tasks.configuration.SonarServerTaskConfigurationService</interface>

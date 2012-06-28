@@ -63,13 +63,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.atlassian.activeobjects</groupId>
-			<artifactId>activeobjects-bamboo-spi</artifactId>
-			<version>${atlassian.ao.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.atlassian.bamboo</groupId>
 			<artifactId>atlassian-bamboo-web</artifactId>
 			<version>${atlassian.bamboo.version}</version>
@@ -313,6 +306,10 @@
 							org.apache.maven.model*;version="0.0",
 							org.apache.tools.ant*;version="0.0",
 							org.jetbrains.annotations*;version="0.0"
+							org.apache.commons.codec*;version="0.0",
+							org.apache.commons.io*;version="0.0",
+							org.apache.commons.lang*;version="0.0",
+							org.apache.http*;version="0.0"
 						</Import-Package>
 						<Private-Package>
 							com.marvelution.security.crypto*,
@@ -325,11 +322,7 @@
 							com.atlassian.plugin;version="0.0",
 							javax.ws.rs;version="0.0",
 							javax.xml.bind;version="0.0",
-							net.java.ao;version="0.0",
-							org.apache.http;version="0.0",
-							org.apache.commons.codec;version="0.0",
-							org.apache.commons.io;version="0.0",
-							org.apache.commons.lang;version="0.0"
+							net.java.ao;version="0.0"
 						</DynamicImport-Package>
 						<Spring-Context>*;timeout:=60</Spring-Context>
 					</instructions>
