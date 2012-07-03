@@ -37,6 +37,21 @@ import net.java.ao.schema.NotNull;
 public interface JDBCResource extends Entity {
 
 	/**
+	 * Getter for the {@link SonarServer}
+	 * 
+	 * @return the {@link SonarServer}
+	 */
+	@NotNull
+	SonarServer getSonarServer();
+
+	/**
+	 * Setter for the {@link SonarServer}
+	 * 
+	 * @param server the {@link SonarServer} to set
+	 */
+	void setSonarServer(SonarServer server);
+
+	/**
 	 * Getter for the url of the server
 	 * 
 	 * @return the url

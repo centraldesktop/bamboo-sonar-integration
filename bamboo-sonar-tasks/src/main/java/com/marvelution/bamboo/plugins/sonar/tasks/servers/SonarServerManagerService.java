@@ -157,8 +157,8 @@ public class SonarServerManagerService implements SonarServerManager {
 				server.setDescription(description);
 				server.setUsername(username);
 				server.setPassword(password);
-				server.setJDBCResource(getJdbcResource(null, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword));
 				server.save();
+				storeJdbcResource(server, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword);
 				return server;
 			}
 		});
@@ -178,12 +178,8 @@ public class SonarServerManagerService implements SonarServerManager {
 		server.setHost(host);
 		server.setUsername(username);
 		server.setPassword(password);
-		JDBCResource resource = null;
-		if (server.getJDBCResource() != null) {
-			resource = server.getJDBCResource();
-		}
-		server.setJDBCResource(getJdbcResource(resource, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword));
 		server.save();
+		storeJdbcResource(server, jdbcUrl, jdbcDriver, jdbcUsername, jdbcPassword);
 		return server;
 	}
 
@@ -209,26 +205,26 @@ public class SonarServerManagerService implements SonarServerManager {
 	}
 
 	/**
-	 * Get a new or update the existing {@link JDBCResource}
+	 * Store a new or update the existing {@link JDBCResource}
 	 * 
-	 * @param resource the {@link JDBCResource} to update, may be <code>null</code> to get a new {@link JDBCResource}
+	 * @param server the {@link SonarServer} to add the {@link JDBCResource} for
 	 * @param url the JDBC URL, may not be <code>null</code>
 	 * @param driver the JDBC Driver, may not be <code>null</code>
 	 * @param username the JDBC username, may not be <code>null</code>
 	 * @param password the JDBC password, may not be <code>null</code>
-	 * @return
 	 */
-	private JDBCResource getJdbcResource(JDBCResource resource, String url, String driver, String username,
+	private void storeJdbcResource(SonarServer server, String url, String driver, String username,
 					String password) {
 		if (StringUtils.isBlank(url) && StringUtils.isBlank(driver) && StringUtils.isBlank(username)
 			&& StringUtils.isBlank(password)) {
-			if (resource != null) {
-				resource.delete();
+			if (server.getJDBCResource() != null) {
+				server.getJDBCResource().delete();
 			}
-			return null;
+			return;
 		}
+		JDBCResource resource = server.getJDBCResource();
 		if (resource == null) {
-			resource = objects.create(JDBCResource.class, new DBParam("URL", url), new DBParam("DRIVER", driver),
+			resource = objects.create(JDBCResource.class, new DBParam("SONAR_SERVER_ID", server.getID()), new DBParam("URL", url), new DBParam("DRIVER", driver),
 				new DBParam("USERNAME", username));
 		} else {
 			resource.setUrl(url);
@@ -237,7 +233,6 @@ public class SonarServerManagerService implements SonarServerManager {
 		}
 		resource.setPassword(password);
 		resource.save();
-		return resource;
 	}
 
 }

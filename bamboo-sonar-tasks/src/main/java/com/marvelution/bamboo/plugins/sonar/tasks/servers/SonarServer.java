@@ -21,6 +21,7 @@ package com.marvelution.bamboo.plugins.sonar.tasks.servers;
 
 import net.java.ao.Entity;
 import net.java.ao.Implementation;
+import net.java.ao.OneToOne;
 import net.java.ao.Preload;
 import net.java.ao.schema.Ignore;
 import net.java.ao.schema.NotNull;
@@ -113,14 +114,8 @@ public interface SonarServer extends Entity {
 	 * 
 	 * @return the {@link JDBCResource}
 	 */
+	@OneToOne
 	JDBCResource getJDBCResource();
-
-	/**
-	 * Setter for the {@link JDBCResource}
-	 * 
-	 * @param resource the {@link JDBCResource} to set
-	 */
-	void setJDBCResource(JDBCResource resource);
 
 	/**
 	 * Custom delete implementation
