@@ -45,7 +45,6 @@
 		<atlassian.plugin.key>${atlassian.plugin.key.base}.tasks</atlassian.plugin.key>
 		<sonar.gadgets.version>1.7.0</sonar.gadgets.version>
 		<sonar.gadgets.directory>${project.build.directory}/generated-resources/sonar-gadgets</sonar.gadgets.directory>
-		<atlassian.ao.version>0.19.10</atlassian.ao.version>
 	</properties>
 
 	<dependencies>
@@ -302,14 +301,14 @@
 							javax.crypto*;version="0.0",
 							javax.net*;version="0.0",
 							javax.servlet*;version="0.0",
+							org.apache.commons.codec*;version="0.0",
+							org.apache.commons.io*;version="0.0",
+							org.apache.commons.lang*;version="0.0",
+							org.apache.http*;version="0.0",
 							org.apache.log4j*;version="0.0",
 							org.apache.maven.model*;version="0.0",
 							org.apache.tools.ant*;version="0.0",
 							org.jetbrains.annotations*;version="0.0"
-							org.apache.commons.codec*;version="0.0",
-							org.apache.commons.io*;version="0.0",
-							org.apache.commons.lang*;version="0.0",
-							org.apache.http*;version="0.0"
 						</Import-Package>
 						<Private-Package>
 							com.marvelution.security.crypto*,
@@ -321,8 +320,7 @@
 							com.atlassian.activeobjects.external;version="0.0",
 							com.atlassian.plugin;version="0.0",
 							javax.ws.rs;version="0.0",
-							javax.xml.bind;version="0.0",
-							net.java.ao;version="0.0"
+							javax.xml.bind;version="0.0"
 						</DynamicImport-Package>
 						<Spring-Context>*;timeout:=60</Spring-Context>
 					</instructions>
