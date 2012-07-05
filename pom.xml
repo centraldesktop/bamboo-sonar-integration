@@ -83,12 +83,13 @@
 
 	<properties>
 		<project.jdk.revision>1.6</project.jdk.revision>
-		<atlassian.bamboo.version>4.1.2</atlassian.bamboo.version>
-		<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
-		<atlassian.ao.version>0.19.12</atlassian.ao.version>
 		<sonar.version>3.0.1</sonar.version>
 		<atlassian.plugin.key.base>${project.groupId}.sonar</atlassian.plugin.key.base>
 		<stagingSiteURL>dav:http://repository.marvelution.com/content/sites/apidocs-staging/bamboo-sonar-integration/${project.version}/</stagingSiteURL>
+		<!-- Below are the default Bamboo versions. Profiles can be used to test the project against other versions of Bamboo -->
+		<atlassian.bamboo.version>4.0.1</atlassian.bamboo.version>
+		<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
+		<atlassian.ao.version>0.17.2</atlassian.ao.version>
 	</properties>
 
 	<dependencies>
@@ -151,19 +152,11 @@
 
 	<profiles>
 		<profile>
-			<id>bamboo-4.0</id>
-			<properties>
-				<atlassian.bamboo.version>4.0.1</atlassian.bamboo.version>
-				<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
-				<atlassian.ao.version>0.17.2</atlassian.ao.version>
-			</properties>
-		</profile>
-		<profile>
 			<id>bamboo-4.1</id>
 			<properties>
 				<atlassian.bamboo.version>4.1.2</atlassian.bamboo.version>
 				<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
-				<atlassian.ao.version>0.19.12</atlassian.ao.version>
+				<atlassian.ao.version>0.19.11</atlassian.ao.version>
 			</properties>
 		</profile>
 		<profile>
