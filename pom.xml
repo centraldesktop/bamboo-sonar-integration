@@ -17,179 +17,196 @@
  ~ specific language governing permissions and limitations
  ~ under the License.
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
 	<parent>
 		<artifactId>marvelution</artifactId>
 		<groupId>com.marvelution</groupId>
 		<version>17</version>
+        <relativePath>../marvelution-pom/pom.xml</relativePath>
 	</parent>
-	<groupId>com.marvelution.bamboo.plugins</groupId>
-	<artifactId>bamboo-sonar-integration</artifactId>
-	<version>1.6.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
-	<modules>
-		<module>bamboo-sonar-tasks</module>
-		<module>bamboo-sonar-web</module>
-		<module>bamboo-sonar</module>
-	</modules>
-	
-	<name>Bamboo Sonar Integration</name>
-	<description>Integration projects that, through several Bamboo plugins, support the integration between Atlassian Bamboo and Sonar</description>
-	<url>http://apidocs.marvelution.com/bamboo-sonar-integration/${project.version}/</url>
-	<inceptionYear>2011</inceptionYear>
-	<organization>
-		<name>Marvelution</name>
-		<url>http://www.marvelution.com/</url>
-	</organization>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <groupId>com.marvelution.bamboo.plugins</groupId>
+    <artifactId>bamboo-sonar-integration</artifactId>
+    <version>1.6.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<scm>
-		<connection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git</connection>
-		<developerConnection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git</developerConnection>
-		<url>http://fisheye.marvelution.com/browse/bamboo-sonar-integration</url>
-	  <tag>HEAD</tag>
-  </scm>
-	<issueManagement>
-		<system>JIRA</system>
-		<url>http://issues.marvelution.com/browse/BAMSON</url>
-	</issueManagement>
-	<ciManagement>
-		<system>Bamboo</system>
-		<url>http://builds.marvelution.com/browse/BAMSON</url>
-		<notifiers>
-			<notifier>
-				<type>mail</type>
-				<configuration>
-					<address>ci@lists.marvelution.com</address>
-				</configuration>
-			</notifier>
-		</notifiers>
-	</ciManagement>
-	<distributionManagement>
-		<site>
-			<id>marvelution.website</id>
-			<url>dav:http://repository.marvelution.com/content/sites/apidocs/bamboo-sonar-integration/${project.version}/</url>
-		</site>
-	</distributionManagement>
+    <modules>
+        <module>bamboo-sonar-tasks</module>
+        <module>bamboo-sonar-web</module>
+        <module>bamboo-sonar</module>
+    </modules>
 
-	<properties>
-		<project.jdk.revision>1.6</project.jdk.revision>
-		<sonar.version>3.0.1</sonar.version>
-		<atlassian.plugin.key.base>${project.groupId}.sonar</atlassian.plugin.key.base>
-		<stagingSiteURL>dav:http://repository.marvelution.com/content/sites/apidocs-staging/bamboo-sonar-integration/${project.version}/</stagingSiteURL>
-		<!-- Below are the default Bamboo versions. Profiles can be used to test the project against other versions of Bamboo -->
-		<atlassian.bamboo.version>4.0.1</atlassian.bamboo.version>
-		<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
-		<atlassian.ao.version>0.17.2</atlassian.ao.version>
-	</properties>
+    <name>Bamboo Sonar Integration</name>
+    <description>Integration projects that, through several Bamboo plugins, support the integration between Atlassian
+        Bamboo and Sonar
+    </description>
+    <url>http://apidocs.marvelution.com/bamboo-sonar-integration/${project.version}/</url>
+    <inceptionYear>2011</inceptionYear>
+    <organization>
+        <name>Marvelution</name>
+        <url>http://www.marvelution.com/</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.atlassian.bamboo</groupId>
-			<artifactId>atlassian-bamboo-api</artifactId>
-			<version>${atlassian.bamboo.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.atlassian.bamboo</groupId>
-			<artifactId>atlassian-bamboo-ui-test</artifactId>
-			<version>${atlassian.bamboo.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
-			<version>1.4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>1.4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.8.5</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <scm>
+        <connection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git</connection>
+        <developerConnection>scm:git:git@github.com:Marvelution/bamboo-sonar-integration.git</developerConnection>
+        <url>http://fisheye.marvelution.com/browse/bamboo-sonar-integration</url>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://issues.marvelution.com/browse/BAMSON</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Bamboo</system>
+        <url>http://builds.marvelution.com/browse/BAMSON</url>
+        <notifiers>
+            <notifier>
+                <type>mail</type>
+                <configuration>
+                    <address>ci@lists.marvelution.com</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+    <distributionManagement>
+        <site>
+            <id>marvelution.website</id>
+            <url>
+                dav:http://repository.marvelution.com/content/sites/apidocs/bamboo-sonar-integration/${project.version}/
+            </url>
+        </site>
+    </distributionManagement>
 
-	<build>
-		<plugins>
-			<!-- preparation goals need to be clean because of Maven Release plugin issue MRELEASE-285 -->
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<preparationGoals>clean</preparationGoals>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <properties>
+        <project.jdk.revision>1.6</project.jdk.revision>
+        <sonar.version>3.0.1</sonar.version>
+        <atlassian.plugin.key.base>${project.groupId}.sonar</atlassian.plugin.key.base>
+        <stagingSiteURL>
+            dav:http://repository.marvelution.com/content/sites/apidocs-staging/bamboo-sonar-integration/${project.version}/
+        </stagingSiteURL>
+        <!-- Below are the default Bamboo versions. Profiles can be used to test the project against other versions of Bamboo -->
+        <atlassian.bamboo.version>4.0.1</atlassian.bamboo.version>
+        <atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
+        <atlassian.ao.version>0.17.2</atlassian.ao.version>
+    </properties>
 
-	<profiles>
-		<profile>
-			<id>bamboo-4.1</id>
-			<properties>
-				<atlassian.bamboo.version>4.1.2</atlassian.bamboo.version>
-				<atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
-				<atlassian.ao.version>0.19.11</atlassian.ao.version>
-			</properties>
-		</profile>
-		<profile>
-			<id>license-header</id>
-			<build>
-				<plugins>
-					<plugin>
-						<inherited>true</inherited>
-						<groupId>com.mycila.maven-license-plugin</groupId>
-						<artifactId>maven-license-plugin</artifactId>
-						<configuration>
-							<excludes>
-								<exclude>**/panel.js</exclude>
-							</excludes>
-						</configuration>
-					</plugin>
-			</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.bamboo</groupId>
+            <artifactId>atlassian-bamboo-api</artifactId>
+            <version>${atlassian.bamboo.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.bamboo</groupId>
+            <artifactId>atlassian-bamboo-ui-test</artifactId>
+            <version>${atlassian.bamboo.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.5</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<developers>
-		<developer>
-			<id>markrekveld</id>
-			<name>Mark Rekveld</name>
-			<url>http://www.marvelution.com</url>
-			<organization>Marvelution</organization>
-			<email>markrekveld@marvelution.com</email>
-			<organizationUrl>http://www.marvelution.com</organizationUrl>
-			<timezone>+1</timezone>
-			<roles>
-				<role>Marvelution Member</role>
-			</roles>
-		</developer>
-	</developers>
+    <build>
+        <plugins>
+            <!-- preparation goals need to be clean because of Maven Release plugin issue MRELEASE-285 -->
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean</preparationGoals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>bamboo-4.1</id>
+            <properties>
+                <atlassian.bamboo.version>4.1.2</atlassian.bamboo.version>
+                <atlassian.bamboo.data.version>3.2.2</atlassian.bamboo.data.version>
+                <atlassian.ao.version>0.19.11</atlassian.ao.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>license-header</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/panel.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>twdata</id>
+            <url>http://twdata-m2-repository.googlecode.com/svn</url>
+        </repository>
+
+    </repositories>
+    <developers>
+        <developer>
+            <id>markrekveld</id>
+            <name>Mark Rekveld</name>
+            <url>http://www.marvelution.com</url>
+            <organization>Marvelution</organization>
+            <email>markrekveld@marvelution.com</email>
+            <organizationUrl>http://www.marvelution.com</organizationUrl>
+            <timezone>+1</timezone>
+            <roles>
+                <role>Marvelution Member</role>
+            </roles>
+        </developer>
+    </developers>
 </project>
